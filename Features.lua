@@ -13,6 +13,26 @@ if not success then
 end
 
 -- ====================
+-- Custom Toggle Text for Rayfield UI
+-- Mengubah teks "Show Rayfield" jadi "Show Menu ⚙️"
+-- ====================
+
+task.spawn(function()
+    -- tunggu sampai Rayfield UI sepenuhnya muncul
+    repeat task.wait() until Rayfield and Rayfield.UI
+
+    while task.wait(2) do
+        local ToggleBtn = Rayfield.UI:FindFirstChild("Toggle")
+        if ToggleBtn and ToggleBtn:FindFirstChild("TextLabel") then
+            local label = ToggleBtn.TextLabel
+            if label.Text ~= "Show Menu ⚙️" then
+                label.Text = "Show Menu ⚙️"
+            end
+        end
+    end
+end)
+
+-- ====================
 -- GLOBAL VARIABLES & CFRAMES
 -- ====================
 -- (Biarkan sama)
