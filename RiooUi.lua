@@ -1,4 +1,4 @@
--- RiooUI v1.1 (Dark Minimal, Draggable, Centered)
+-- RiooUI v1.2 (Dark Minimal, Draggable, Notify System)
 local Rioo = {}
 local UIS = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
@@ -59,6 +59,38 @@ function Rioo:CreateWindow(config)
 	TabContent.BorderSizePixel = 0
 	TabContent.Parent = TabContainer
 
+	-- 🔔 Notify system
+	local NotifyFrame = Instance.new("Frame")
+	NotifyFrame.Size = UDim2.new(0, 250, 0, 40)
+	NotifyFrame.Position = UDim2.new(0.5, -125, 0, -50)
+	NotifyFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+	NotifyFrame.BorderSizePixel = 0
+	NotifyFrame.Visible = false
+	NotifyFrame.Parent = ScreenGui
+
+	local NotifyCorner = Instance.new("UICorner", NotifyFrame)
+	NotifyCorner.CornerRadius = UDim.new(0, 6)
+
+	local NotifyLabel = Instance.new("TextLabel")
+	NotifyLabel.Size = UDim2.new(1, -10, 1, 0)
+	NotifyLabel.Position = UDim2.new(0, 5, 0, 0)
+	NotifyLabel.BackgroundTransparency = 1
+	NotifyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+	NotifyLabel.TextSize = 16
+	NotifyLabel.Font = Enum.Font.Roboto
+	NotifyLabel.TextXAlignment = Enum.TextXAlignment.Center
+	NotifyLabel.Parent = NotifyFrame
+
+	function Rioo:Notify(text)
+		NotifyLabel.Text = text
+		NotifyFrame.Visible = true
+		TweenService:Create(NotifyFrame, TweenInfo.new(0.2), {Position = UDim2.new(0.5, -125, 0.05, 0)}):Play()
+		task.wait(2.5)
+		TweenService:Create(NotifyFrame, TweenInfo.new(0.3), {Position = UDim2.new(0.5, -125, 0, -50)}):Play()
+		task.wait(0.3)
+		NotifyFrame.Visible = false
+	end
+
 	function Rioo:CreateTab(tabName)
 		local TabButton = Instance.new("TextButton")
 		TabButton.Size = UDim2.new(1, 0, 0, 30)
@@ -115,7 +147,10 @@ function Rioo:CreateWindow(config)
 				UIC.CornerRadius = UDim.new(0, 4)
 
 				Btn.MouseButton1Click:Connect(function()
-					pcall(callback)
+					Rioo:Notify(text .. " clicked!")
+					if callback then
+						task.spawn(callback)
+					end
 				end)
 			end
 
@@ -137,7 +172,10 @@ function Rioo:CreateWindow(config)
 				Btn.MouseButton1Click:Connect(function()
 					state = not state
 					Btn.Text = text .. (state and " [ON]" or " [OFF]")
-					pcall(callback, state)
+					Rioo:Notify(text .. (state and " ON" or " OFF"))
+					if callback then
+						task.spawn(callback, state)
+					end
 				end)
 			end
 
