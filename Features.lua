@@ -1,4 +1,4 @@
--- MainFeatures.lua
+-- MainFeature.lua
 -- ServerScript (ServerScriptService)
 -- Implements instant fish logic, auto-fish per-player, teleport requests,
 -- webhook sending, and sends InstantFishResult to client.
