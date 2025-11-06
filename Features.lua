@@ -2,4 +2,7 @@ local Rioo = loadstring(game:HttpGet("https://raw.githubusercontent.com/RioYang0
 local win = Rioo:CreateWindow({Name="Fish It Hub", SubTitle="by Rio"})
 local tab = win:CreateTab("Main")
 local sec = tab:CreateSection("Auto")
-sec:CreateButton("Test Button", function() print("Clicked!") end)
+
+sec:CreateButton("Test Button", function()
+    Rioo:Notify("Clicked!")
+end)
