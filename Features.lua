@@ -1,4 +1,3 @@
--- Services
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
@@ -10,7 +9,7 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
 
 -- =======================
--- Main Frame
+-- Main UI Frame
 -- =======================
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 400, 0, 300)
@@ -21,9 +20,9 @@ MainFrame.Parent = ScreenGui
 MainFrame.Active = true
 MainFrame.Draggable = true
 
--- Title
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1, 0, 0, 40)
+Title.Position = UDim2.new(0, 0, 0, 0)
 Title.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 Title.BorderSizePixel = 0
 Title.Text = "RiooHub Template"
@@ -33,21 +32,27 @@ Title.TextSize = 20
 Title.Parent = MainFrame
 
 -- =======================
--- Show/Hide Button TERPISAH
+-- Tombol Open/Close Menu (selalu terlihat)
 -- =======================
 local ToggleButton = Instance.new("TextButton")
-ToggleButton.Size = UDim2.new(0, 120, 0, 30)
-ToggleButton.Position = UDim2.new(0, 10, 0, 10) -- selalu di pojok kiri atas layar
+ToggleButton.Size = UDim2.new(0, 120, 0, 40)
+ToggleButton.Position = UDim2.new(0, 20, 0, 20)
 ToggleButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleButton.Text = "Close Menu" -- menu awalnya terbuka
-ToggleButton.Parent = ScreenGui -- PENTING: parent di ScreenGui, bukan MainFrame
+ToggleButton.Text = "Close Menu"
+ToggleButton.Font = Enum.Font.SourceSansBold
+ToggleButton.TextSize = 18
+ToggleButton.Parent = ScreenGui -- penting: parent langsung di ScreenGui
 
 local UIVisible = true
 ToggleButton.MouseButton1Click:Connect(function()
     UIVisible = not UIVisible
     MainFrame.Visible = UIVisible
-    ToggleButton.Text = UIVisible and "Close Menu" or "Open Menu"
+    if UIVisible then
+        ToggleButton.Text = "Close Menu"
+    else
+        ToggleButton.Text = "Open Menu"
+    end
 end)
 
 -- =======================
@@ -55,7 +60,7 @@ end)
 -- =======================
 local AutoFarmToggle = Instance.new("TextButton")
 AutoFarmToggle.Size = UDim2.new(0, 150, 0, 30)
-AutoFarmToggle.Position = UDim2.new(0, 10, 0, 50)
+AutoFarmToggle.Position = UDim2.new(0, 20, 0, 60)
 AutoFarmToggle.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 AutoFarmToggle.Text = "Auto Farm: OFF"
 AutoFarmToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -67,4 +72,4 @@ AutoFarmToggle.MouseButton1Click:Connect(function()
     AutoFarmToggle.Text = "Auto Farm: " .. (AutoFarmEnabled and "ON" or "OFF")
 end)
 
-print("✅ RiooHub Template WORKING: Open/Close Menu Button sudah berfungsi!")
+print("✅ Working: Open/Close Menu Button sudah berfungsi di Roblox Studio!")
