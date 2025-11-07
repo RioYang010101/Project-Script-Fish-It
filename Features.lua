@@ -1,3 +1,4 @@
+-- Services
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
@@ -9,7 +10,7 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
 
 -- =======================
--- [Main Frame]
+-- Main Frame
 -- =======================
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 400, 0, 300)
@@ -32,25 +33,25 @@ Title.TextSize = 20
 Title.Parent = MainFrame
 
 -- =======================
--- [Open/Close Menu Button]
+-- Show/Hide Button TERPISAH
 -- =======================
-local ShowHideButton = Instance.new("TextButton")
-ShowHideButton.Size = UDim2.new(0, 100, 0, 30)
-ShowHideButton.Position = UDim2.new(0, 10, 0, 10) -- pojok kiri atas layar
-ShowHideButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-ShowHideButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ShowHideButton.Text = "Close Menu" -- awalnya menu terbuka
-ShowHideButton.Parent = ScreenGui
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(0, 120, 0, 30)
+ToggleButton.Position = UDim2.new(0, 10, 0, 10) -- selalu di pojok kiri atas layar
+ToggleButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Text = "Close Menu" -- menu awalnya terbuka
+ToggleButton.Parent = ScreenGui -- PENTING: parent di ScreenGui, bukan MainFrame
 
 local UIVisible = true
-ShowHideButton.MouseButton1Click:Connect(function()
+ToggleButton.MouseButton1Click:Connect(function()
     UIVisible = not UIVisible
     MainFrame.Visible = UIVisible
-    ShowHideButton.Text = UIVisible and "Close Menu" or "Open Menu"
+    ToggleButton.Text = UIVisible and "Close Menu" or "Open Menu"
 end)
 
 -- =======================
--- [Contoh Toggle di MainFrame]
+-- Contoh Toggle di MainFrame
 -- =======================
 local AutoFarmToggle = Instance.new("TextButton")
 AutoFarmToggle.Size = UDim2.new(0, 150, 0, 30)
@@ -66,4 +67,4 @@ AutoFarmToggle.MouseButton1Click:Connect(function()
     AutoFarmToggle.Text = "Auto Farm: " .. (AutoFarmEnabled and "ON" or "OFF")
 end)
 
-print("RiooHub Template with Open/Close Menu Loaded!")
+print("✅ RiooHub Template WORKING: Open/Close Menu Button sudah berfungsi!")
