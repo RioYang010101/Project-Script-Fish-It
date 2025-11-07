@@ -1,7 +1,7 @@
 --[[
 ========================================================
- RiooHub - Fish It (v1.3)
- UI Custom mirip Rayfield, animasi halus + full drag fix
+ RiooHub - Fish It (v1.4)
+ UI Custom mirip Rayfield, animasi halus + DRAG FIX ✅
 ========================================================
 ]]
 
@@ -17,6 +17,7 @@ end
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "RiooHubUI"
 ScreenGui.ResetOnSpawn = false
+ScreenGui.IgnoreGuiInset = true
 ScreenGui.Parent = PlayerGui
 
 -- Tombol Show Menu (atas tengah)
@@ -30,6 +31,7 @@ ShowButton.Font = Enum.Font.GothamBold
 ShowButton.TextSize = 16
 ShowButton.Text = "RiooHub - Fish It"
 ShowButton.BorderSizePixel = 0
+ShowButton.Active = true
 ShowButton.Parent = ScreenGui
 
 -- Frame utama
@@ -39,9 +41,11 @@ MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 MainFrame.Visible = false
+MainFrame.Active = true
+MainFrame.Selectable = true
+MainFrame.Draggable = false
 MainFrame.Parent = ScreenGui
 MainFrame.BorderSizePixel = 0
-
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
 
 -- Title bar (buat drag)
@@ -50,6 +54,7 @@ TitleBar.Size = UDim2.new(1, 0, 0, 35)
 TitleBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 TitleBar.BorderSizePixel = 0
 TitleBar.ZIndex = 10
+TitleBar.Active = true
 TitleBar.Parent = MainFrame
 
 local TitleText = Instance.new("TextLabel")
@@ -153,19 +158,9 @@ ShowButton.MouseButton1Click:Connect(function()
 	if UIVisible then HideUI() else ShowUI() end
 end)
 
--- Sistem drag (full fix)
+-- DRAG SYSTEM FIX ✅
 local dragging = false
 local dragInput, dragStart, startPos
-
-local function update(input)
-	local delta = input.Position - dragStart
-	MainFrame.Position = UDim2.new(
-		startPos.X.Scale,
-		startPos.X.Offset + delta.X,
-		startPos.Y.Scale,
-		startPos.Y.Offset + delta.Y
-	)
-end
 
 TitleBar.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -180,14 +175,14 @@ TitleBar.InputBegan:Connect(function(input)
 	end
 end)
 
-TitleBar.InputChanged:Connect(function(input)
-	if input.UserInputType == Enum.UserInputType.MouseMovement then
-		dragInput = input
-	end
-end)
-
 UserInputService.InputChanged:Connect(function(input)
-	if dragging and input == dragInput then
-		update(input)
+	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+		local delta = input.Position - dragStart
+		MainFrame.Position = UDim2.new(
+			startPos.X.Scale,
+			startPos.X.Offset + delta.X,
+			startPos.Y.Scale,
+			startPos.Y.Offset + delta.Y
+		)
 	end
 end)
