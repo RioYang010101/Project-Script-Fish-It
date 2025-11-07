@@ -1,214 +1,209 @@
 --[[
-==============================================================
- RiooHub - Fish It v1.1 | Custom Modern UI (Rayfield-Style)
- By Rio Yang
-==============================================================
---]]
+========================================================
+ RiooHub - Fish It (v1.1)
+ UI Custom mirip Rayfield, full tanpa library.
+========================================================
+]]
 
-local player = game.Players.LocalPlayer
-local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-gui.Name = "RiooHubUI"
-gui.ResetOnSpawn = false
-
+-- Layanan Roblox
 local TweenService = game:GetService("TweenService")
-local UIS = game:GetService("UserInputService")
+local UserInputService = game:GetService("UserInputService")
 
-----------------------------------------------------------------
--- EFFECT: BLUR BACKGROUND
-----------------------------------------------------------------
-local Blur = Instance.new("BlurEffect", game.Lighting)
-Blur.Size = 0
-Blur.Enabled = false
+-- PlayerGui
+local player = game.Players.LocalPlayer
+local PlayerGui = player:WaitForChild("PlayerGui")
 
-local function tweenBlur(to)
-	TweenService:Create(Blur, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = to}):Play()
+-- Hapus UI lama kalau ada
+if PlayerGui:FindFirstChild("RiooHubUI") then
+	PlayerGui.RiooHubUI:Destroy()
 end
 
-----------------------------------------------------------------
--- DRAG FUNCTION
-----------------------------------------------------------------
-local function makeDraggable(frame, dragArea)
-	local dragging, dragStart, startPos
-	dragArea = dragArea or frame
+-- Buat ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "RiooHubUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui
 
-	dragArea.InputBegan:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = true
-			dragStart = input.Position
-			startPos = frame.Position
-		end
-	end)
+-- Tombol Show Menu (atas tengah)
+local ShowButton = Instance.new("TextButton")
+ShowButton.Name = "ShowButton"
+ShowButton.Size = UDim2.new(0, 200, 0, 40)
+ShowButton.Position = UDim2.new(0.5, 0, 0, 10)
+ShowButton.AnchorPoint = Vector2.new(0.5, 0)
+ShowButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ShowButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ShowButton.Font = Enum.Font.GothamBold
+ShowButton.TextSize = 16
+ShowButton.Text = "RiooHub - Fish It"
+ShowButton.Parent = ScreenGui
+ShowButton.AutoButtonColor = true
+ShowButton.ZIndex = 2
+ShowButton.BorderSizePixel = 0
+ShowButton.Visible = true
+ShowButton.Active = true
 
-	dragArea.InputEnded:Connect(function(input)
-		if input.UserInputType == Enum.UserInputType.MouseButton1 then
-			dragging = false
-		end
-	end)
+-- Frame utama
+local MainFrame = Instance.new("Frame")
+MainFrame.Name = "MainFrame"
+MainFrame.Size = UDim2.new(0, 600, 0, 400)
+MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+MainFrame.BorderSizePixel = 0
+MainFrame.Visible = false
+MainFrame.Parent = ScreenGui
 
-	UIS.InputChanged:Connect(function(input)
-		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-			local delta = input.Position - dragStart
-			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-									   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-		end
-	end)
-end
+-- UI Corner + Shadow
+local UICorner = Instance.new("UICorner", MainFrame)
+UICorner.CornerRadius = UDim.new(0, 12)
 
-----------------------------------------------------------------
--- MAIN WINDOW
-----------------------------------------------------------------
-local Main = Instance.new("Frame", gui)
-Main.Size = UDim2.new(0, 600, 0, 350)
-Main.AnchorPoint = Vector2.new(0.5, 0.5)
-Main.Position = UDim2.new(0.5, 0, -0.3, 0) -- start di atas
-Main.BackgroundColor3 = Color3.fromRGB(25, 35, 55)
-Main.BackgroundTransparency = 1
-Main.BorderSizePixel = 0
-Main.Visible = false
+local Shadow = Instance.new("ImageLabel", MainFrame)
+Shadow.Image = "rbxassetid://1316045217"
+Shadow.ImageTransparency = 0.5
+Shadow.ScaleType = Enum.ScaleType.Slice
+Shadow.SliceCenter = Rect.new(10, 10, 118, 118)
+Shadow.Size = UDim2.new(1, 20, 1, 20)
+Shadow.Position = UDim2.new(0, -10, 0, -10)
+Shadow.ZIndex = 0
+Shadow.BackgroundTransparency = 1
 
-local MainCorner = Instance.new("UICorner", Main)
-MainCorner.CornerRadius = UDim.new(0, 12)
-
-----------------------------------------------------------------
--- HEADER
-----------------------------------------------------------------
-local Header = Instance.new("TextLabel", Main)
-Header.Size = UDim2.new(1, 0, 0, 40)
-Header.BackgroundColor3 = Color3.fromRGB(35, 50, 80)
-Header.Text = "RiooHub - Fish It"
-Header.TextColor3 = Color3.fromRGB(255, 255, 255)
-Header.TextSize = 20
-Header.Font = Enum.Font.GothamBold
-Header.Active = true
-
-local HeaderCorner = Instance.new("UICorner", Header)
-HeaderCorner.CornerRadius = UDim.new(0, 12)
-
-makeDraggable(Main, Header)
-
-----------------------------------------------------------------
--- SIDEBAR
-----------------------------------------------------------------
-local Sidebar = Instance.new("Frame", Main)
-Sidebar.Size = UDim2.new(0, 140, 1, -40)
-Sidebar.Position = UDim2.new(0, 0, 0, 40)
-Sidebar.BackgroundColor3 = Color3.fromRGB(30, 45, 70)
-Sidebar.BackgroundTransparency = 0.05
+-- Sidebar
+local Sidebar = Instance.new("Frame")
+Sidebar.Name = "Sidebar"
+Sidebar.Size = UDim2.new(0, 150, 1, 0)
+Sidebar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+Sidebar.BorderSizePixel = 0
+Sidebar.Parent = MainFrame
 
 local SidebarCorner = Instance.new("UICorner", Sidebar)
 SidebarCorner.CornerRadius = UDim.new(0, 12)
 
-----------------------------------------------------------------
--- CONTENT
-----------------------------------------------------------------
-local Content = Instance.new("Frame", Main)
-Content.Size = UDim2.new(1, -150, 1, -50)
-Content.Position = UDim2.new(0, 150, 0, 45)
-Content.BackgroundColor3 = Color3.fromRGB(20, 30, 50)
-Content.BackgroundTransparency = 0.15
+-- Container isi tab
+local ContentFrame = Instance.new("Frame")
+ContentFrame.Name = "ContentFrame"
+ContentFrame.Size = UDim2.new(1, -150, 1, 0)
+ContentFrame.Position = UDim2.new(0, 150, 0, 0)
+ContentFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+ContentFrame.BorderSizePixel = 0
+ContentFrame.Parent = MainFrame
 
-local ContentCorner = Instance.new("UICorner", Content)
-ContentCorner.CornerRadius = UDim.new(0, 12)
+-- Fungsi buat bikin tab
+local Tabs = {}
+local function CreateTab(name)
+	local Button = Instance.new("TextButton")
+	Button.Size = UDim2.new(1, -20, 0, 40)
+	Button.Position = UDim2.new(0, 10, 0, (#Sidebar:GetChildren() - 1) * 45)
+	Button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	Button.Font = Enum.Font.GothamBold
+	Button.TextSize = 14
+	Button.Text = name
+	Button.Parent = Sidebar
 
-----------------------------------------------------------------
--- TABS
-----------------------------------------------------------------
-local Tabs = {"Home", "Auto", "Shop", "Settings"}
-local Buttons = {}
+	local TabFrame = Instance.new("Frame")
+	TabFrame.Size = UDim2.new(1, 0, 1, 0)
+	TabFrame.BackgroundTransparency = 1
+	TabFrame.Visible = false
+	TabFrame.Parent = ContentFrame
 
-for i, name in ipairs(Tabs) do
-	local btn = Instance.new("TextButton", Sidebar)
-	btn.Size = UDim2.new(1, -20, 0, 40)
-	btn.Position = UDim2.new(0, 10, 0, (i - 1) * 45 + 10)
-	btn.Text = name
-	btn.BackgroundColor3 = Color3.fromRGB(45, 65, 100)
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.TextSize = 16
-	btn.Font = Enum.Font.Gotham
-
-	local btnCorner = Instance.new("UICorner", btn)
-	btnCorner.CornerRadius = UDim.new(0, 8)
-
-	btn.MouseButton1Click:Connect(function()
-		for _, b in ipairs(Buttons) do
-			b.BackgroundColor3 = Color3.fromRGB(45, 65, 100)
+	Button.MouseButton1Click:Connect(function()
+		for _, tab in pairs(Tabs) do
+			tab.Visible = false
 		end
-		btn.BackgroundColor3 = Color3.fromRGB(65, 95, 145)
-
-		for _, child in ipairs(Content:GetChildren()) do
-			child:Destroy()
-		end
-
-		local label = Instance.new("TextLabel", Content)
-		label.BackgroundTransparency = 1
-		label.Size = UDim2.new(1, 0, 1, 0)
-		label.Font = Enum.Font.GothamSemibold
-		label.TextSize = 20
-		label.TextColor3 = Color3.fromRGB(255, 255, 255)
-		label.Text = "Kamu membuka tab: " .. name
+		TabFrame.Visible = true
 	end)
 
-	table.insert(Buttons, btn)
+	table.insert(Tabs, TabFrame)
+	return TabFrame
 end
 
-----------------------------------------------------------------
--- SHOW / HIDE BUTTON (TOP CENTER)
-----------------------------------------------------------------
-local ToggleBtn = Instance.new("TextButton", gui)
-ToggleBtn.Size = UDim2.new(0, 200, 0, 40)
-ToggleBtn.AnchorPoint = Vector2.new(0.5, 0)
-ToggleBtn.Position = UDim2.new(0.5, 0, 0.03, 0)
-ToggleBtn.Text = "RiooHub - Fish It"
-ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleBtn.BackgroundColor3 = Color3.fromRGB(35, 55, 95)
-ToggleBtn.Font = Enum.Font.GothamBold
-ToggleBtn.TextSize = 17
-ToggleBtn.Active = true
+-- Contoh Tab
+local AutoTab = CreateTab("Auto")
+local SettingsTab = CreateTab("Settings")
 
-local ToggleCorner = Instance.new("UICorner", ToggleBtn)
-ToggleCorner.CornerRadius = UDim.new(0, 10)
+-- Isi Tab Auto
+local AutoLabel = Instance.new("TextLabel")
+AutoLabel.Size = UDim2.new(1, -20, 0, 30)
+AutoLabel.Position = UDim2.new(0, 10, 0, 10)
+AutoLabel.BackgroundTransparency = 1
+AutoLabel.Text = "Auto Tab Content"
+AutoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+AutoLabel.TextSize = 14
+AutoLabel.Font = Enum.Font.Gotham
+AutoLabel.Parent = AutoTab
 
-makeDraggable(ToggleBtn)
+-- Default Tab yang tampil
+Tabs[1].Visible = true
 
-----------------------------------------------------------------
--- SHOW / HIDE ANIMATION
-----------------------------------------------------------------
-local visible = false
-local tweenInfo = TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+-- === Animasi Show / Hide ===
+local UIVisible = false
+local tweenInfo = TweenInfo.new(0.4, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
-local function showUI()
-	local vp = workspace.CurrentCamera.ViewportSize
-	Main.Position = UDim2.new(0.5, 0, -0.3, 0)
-	Main.Visible = true
-	Blur.Enabled = true
-	tweenBlur(12)
-	local tween = TweenService:Create(Main, tweenInfo, {
+local function ShowUI()
+	UIVisible = true
+	MainFrame.Visible = true
+	MainFrame.Position = UDim2.new(0.5, 0, 0.4, 0)
+	MainFrame.BackgroundTransparency = 1
+	TweenService:Create(MainFrame, tweenInfo, {
 		Position = UDim2.new(0.5, 0, 0.5, 0),
-		BackgroundTransparency = 0.08
-	})
-	tween:Play()
+		BackgroundTransparency = 0
+	}):Play()
 end
 
-local function hideUI()
-	local tween = TweenService:Create(Main, tweenInfo, {
-		Position = UDim2.new(0.5, 0, -0.3, 0),
+local function HideUI()
+	UIVisible = false
+	TweenService:Create(MainFrame, tweenInfo, {
+		Position = UDim2.new(0.5, 0, 0.4, 0),
 		BackgroundTransparency = 1
-	})
-	tween:Play()
-	tween.Completed:Connect(function()
-		Main.Visible = false
-		Blur.Enabled = false
-		tweenBlur(0)
-	end)
+	}):Play()
+	task.wait(0.4)
+	MainFrame.Visible = false
 end
 
-ToggleBtn.MouseButton1Click:Connect(function()
-	visible = not visible
-	if visible then
-		showUI()
+ShowButton.MouseButton1Click:Connect(function()
+	if UIVisible then
+		HideUI()
 	else
-		hideUI()
+		ShowUI()
 	end
 end)
 
-print("✅ RiooHub - Fish It v1.1 (Rayfield Style) Loaded!")
+-- === DRAG SYSTEM ===
+local dragging = false
+local dragInput, dragStart, startPos
+
+local function update(input)
+	local delta = input.Position - dragStart
+	MainFrame.Position = UDim2.new(
+		startPos.X.Scale,
+		startPos.X.Offset + delta.X,
+		startPos.Y.Scale,
+		startPos.Y.Offset + delta.Y
+	)
+end
+
+MainFrame.InputBegan:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = true
+		dragStart = input.Position
+		startPos = MainFrame.Position
+
+		input.Changed:Connect(function()
+			if input.UserInputState == Enum.UserInputState.End then
+				dragging = false
+			end
+		end)
+	end
+end)
+
+MainFrame.InputChanged:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseMovement then
+		dragInput = input
+	end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+	if input == dragInput and dragging then
+		update(input)
+	end
+end)
