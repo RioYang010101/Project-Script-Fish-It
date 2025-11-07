@@ -1,22 +1,15 @@
-local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
-local PlayerGui = Player:WaitForChild("PlayerGui")
-
--- ScreenGui
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "RiooHubUI"
-ScreenGui.ResetOnSpawn = false
-ScreenGui.Parent = PlayerGui
+-- Delta Executor friendly UI
+local CoreGui = game:GetService("CoreGui")
 
 -- =======================
--- Main UI Frame
+-- Main Frame
 -- =======================
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 400, 0, 300)
 MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
 MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 MainFrame.BorderSizePixel = 0
-MainFrame.Parent = ScreenGui
+MainFrame.Parent = CoreGui -- PENTING: pakai CoreGui untuk Delta Executor
 MainFrame.Active = true
 MainFrame.Draggable = true
 
@@ -32,7 +25,7 @@ Title.TextSize = 20
 Title.Parent = MainFrame
 
 -- =======================
--- Tombol Open/Close Menu (selalu terlihat)
+-- Open/Close Button (Delta friendly)
 -- =======================
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Size = UDim2.new(0, 120, 0, 40)
@@ -42,17 +35,13 @@ ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleButton.Text = "Close Menu"
 ToggleButton.Font = Enum.Font.SourceSansBold
 ToggleButton.TextSize = 18
-ToggleButton.Parent = ScreenGui -- penting: parent langsung di ScreenGui
+ToggleButton.Parent = CoreGui -- PENTING: parent CoreGui biar muncul di Delta Executor
 
 local UIVisible = true
 ToggleButton.MouseButton1Click:Connect(function()
     UIVisible = not UIVisible
     MainFrame.Visible = UIVisible
-    if UIVisible then
-        ToggleButton.Text = "Close Menu"
-    else
-        ToggleButton.Text = "Open Menu"
-    end
+    ToggleButton.Text = UIVisible and "Close Menu" or "Open Menu"
 end)
 
 -- =======================
@@ -72,4 +61,4 @@ AutoFarmToggle.MouseButton1Click:Connect(function()
     AutoFarmToggle.Text = "Auto Farm: " .. (AutoFarmEnabled and "ON" or "OFF")
 end)
 
-print("✅ Working: Open/Close Menu Button sudah berfungsi di Roblox Studio!")
+print("✅ Delta Executor UI Loaded: Open/Close Menu Button pasti muncul!")
