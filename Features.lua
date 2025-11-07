@@ -1,7 +1,7 @@
 --[[
 ========================================================
- RiooHub - Fish It (v1.5)
- UI Custom mirip Rayfield, animasi halus + DRAG FIX ✅
+ RiooHub - Fish It (v1.6)
+ UI Custom mirip Rayfield, drag fix & tab proporsional ✅
 ========================================================
 ]]
 
@@ -72,9 +72,9 @@ Sidebar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 Sidebar.BorderSizePixel = 0
 Sidebar.Parent = MainFrame
 
--- Content area
+-- Content area (proporsional)
 local ContentFrame = Instance.new("Frame")
-ContentFrame.Size = UDim2.new(1, -150, 1, -35)
+ContentFrame.Size = UDim2.new(1, -160, 1, -50)
 ContentFrame.Position = UDim2.new(0, 150, 0, 35)
 ContentFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 ContentFrame.BorderSizePixel = 0
@@ -84,8 +84,8 @@ ContentFrame.Parent = MainFrame
 local Tabs = {}
 local function CreateTab(name)
 	local Button = Instance.new("TextButton")
-	Button.Size = UDim2.new(1, -20, 0, 40)
-	Button.Position = UDim2.new(0, 10, 0, (#Sidebar:GetChildren() - 1) * 45)
+	Button.Size = UDim2.new(1, -20, 0, 35)
+	Button.Position = UDim2.new(0, 10, 0, (#Sidebar:GetChildren() - 1) * 40)
 	Button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 	Button.TextColor3 = Color3.fromRGB(255, 255, 255)
 	Button.Font = Enum.Font.GothamBold
@@ -155,15 +155,16 @@ ShowButton.MouseButton1Click:Connect(function()
 	if UIVisible then HideUI() else ShowUI() end
 end)
 
--- DRAG SYSTEM FIX ✅
+-- DRAG SYSTEM FIX (pakai offset murni, pasti jalan)
 local dragging = false
-local dragStart, startPos
+local dragStart = Vector2.new()
+local frameStart = Vector2.new()
 
 TitleBar.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging = true
 		dragStart = input.Position
-		startPos = MainFrame.Position
+		frameStart = Vector2.new(MainFrame.Position.X.Offset, MainFrame.Position.Y.Offset)
 	end
 end)
 
@@ -176,11 +177,6 @@ end)
 UserInputService.InputChanged:Connect(function(input)
 	if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
 		local delta = input.Position - dragStart
-		MainFrame.Position = UDim2.new(
-			startPos.X.Scale,
-			startPos.X.Offset + delta.X,
-			startPos.Y.Scale,
-			startPos.Y.Offset + delta.Y
-		)
+		MainFrame.Position = UDim2.new(0, frameStart.X + delta.X, 0, frameStart.Y + delta.Y)
 	end
 end)
