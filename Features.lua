@@ -12,19 +12,17 @@ ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
 
 -- =======================
--- Main Window (Rayfield style)
+-- Main Window
 -- =======================
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 500, 0, 350)
 MainFrame.Position = UDim2.new(0.5, -250, 0.5, -175)
-MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+MainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
 MainFrame.BorderSizePixel = 0
-MainFrame.Parent = ScreenGui
 MainFrame.Active = true
 MainFrame.Draggable = true
-MainFrame.ClipsDescendants = true
+MainFrame.Parent = ScreenGui
 
--- Rounded corners + shadow
 local Corner = Instance.new("UICorner")
 Corner.CornerRadius = UDim.new(0, 10)
 Corner.Parent = MainFrame
@@ -35,13 +33,9 @@ Shadow.Thickness = 2
 Shadow.Transparency = 0.5
 Shadow.Parent = MainFrame
 
--- Gradient background
-local Gradient = Instance.new("UIGradient")
-Gradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(50,50,50)), ColorSequenceKeypoint.new(1, Color3.fromRGB(35,35,35))}
-Gradient.Rotation = 45
-Gradient.Parent = MainFrame
-
+-- =======================
 -- Title Bar
+-- =======================
 local Title = Instance.new("TextLabel")
 Title.Size = UDim2.new(1,0,0,40)
 Title.Position = UDim2.new(0,0,0,0)
@@ -58,27 +52,27 @@ TitleCorner.CornerRadius = UDim.new(0, 10)
 TitleCorner.Parent = Title
 
 -- =======================
--- Open/Close Menu Button
+-- Show/Hide Menu Button
 -- =======================
-local ToggleButton = Instance.new("TextButton")
-ToggleButton.Size = UDim2.new(0, 160, 0, 40)
-ToggleButton.Position = UDim2.new(0, 20, 0, 20)
-ToggleButton.BackgroundColor3 = Color3.fromRGB(70,70,70)
-ToggleButton.TextColor3 = Color3.fromRGB(255,255,255)
-ToggleButton.Text = "RiooHub - Fish It"
-ToggleButton.Font = Enum.Font.GothamBold
-ToggleButton.TextSize = 18
-ToggleButton.Parent = ScreenGui
+local ShowMenuBtn = Instance.new("TextButton")
+ShowMenuBtn.Size = UDim2.new(0, 160, 0, 40)
+ShowMenuBtn.Position = UDim2.new(0, 20, 0, 20)
+ShowMenuBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
+ShowMenuBtn.TextColor3 = Color3.fromRGB(255,255,255)
+ShowMenuBtn.Text = "Hide Menu"
+ShowMenuBtn.Font = Enum.Font.GothamBold
+ShowMenuBtn.TextSize = 18
+ShowMenuBtn.Parent = ScreenGui
 
-local ButtonCorner = Instance.new("UICorner")
-ButtonCorner.CornerRadius = UDim.new(0,8)
-ButtonCorner.Parent = ToggleButton
+local CornerBtn = Instance.new("UICorner")
+CornerBtn.CornerRadius = UDim.new(0,8)
+CornerBtn.Parent = ShowMenuBtn
 
-local UIVisible = true
-ToggleButton.MouseButton1Click:Connect(function()
-    UIVisible = not UIVisible
-    MainFrame.Visible = UIVisible
-    ToggleButton.Text = UIVisible and "RiooHub - Fish It" or "Open Menu"
+local MenuVisible = true
+ShowMenuBtn.MouseButton1Click:Connect(function()
+    MenuVisible = not MenuVisible
+    MainFrame.Visible = MenuVisible
+    ShowMenuBtn.Text = MenuVisible and "Hide Menu" or "Show Menu"
 end)
 
 -- =======================
@@ -87,72 +81,96 @@ end)
 local Tabs = {}
 local CurrentTab = nil
 
+local TabBar = Instance.new("Frame")
+TabBar.Size = UDim2.new(0, 200, 0, 40)
+TabBar.Position = UDim2.new(0, 200, 0.5, -175)
+TabBar.BackgroundColor3 = Color3.fromRGB(30,30,30)
+TabBar.Parent = ScreenGui
+
+local TabBarCorner = Instance.new("UICorner")
+TabBarCorner.CornerRadius = UDim.new(0,8)
+TabBarCorner.Parent = TabBar
+
 local function CreateTab(name)
     local TabButton = Instance.new("TextButton")
-    TabButton.Size = UDim2.new(0, 120, 0, 35)
-    TabButton.Position = UDim2.new(0, 10 + #Tabs*130, 0, 50)
+    TabButton.Size = UDim2.new(0, 180, 0, 35)
+    TabButton.Position = UDim2.new(0, 10 + #Tabs*190, 0, 2)
     TabButton.BackgroundColor3 = Color3.fromRGB(60,60,60)
     TabButton.TextColor3 = Color3.fromRGB(255,255,255)
     TabButton.Text = name
     TabButton.Font = Enum.Font.GothamBold
     TabButton.TextSize = 16
-    TabButton.Parent = MainFrame
+    TabButton.Parent = TabBar
 
     local TabCorner = Instance.new("UICorner")
     TabCorner.CornerRadius = UDim.new(0,6)
     TabCorner.Parent = TabButton
 
     local TabContent = Instance.new("Frame")
-    TabContent.Size = UDim2.new(1,-20,1,-100)
-    TabContent.Position = UDim2.new(0,10,0,90)
+    TabContent.Size = UDim2.new(0, 480, 0, 300)
+    TabContent.Position = UDim2.new(0.5, -240, 0.5, -150)
     TabContent.BackgroundColor3 = Color3.fromRGB(45,45,45)
     TabContent.Visible = false
-    TabContent.Parent = MainFrame
+    TabContent.Parent = ScreenGui
 
-    TabButton.MouseEnter:Connect(function()
-        TweenService:Create(TabButton, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(80,80,80)}):Play()
+    -- Close Tab Button
+    local CloseTab = Instance.new("TextButton")
+    CloseTab.Size = UDim2.new(0, 60, 0, 25)
+    CloseTab.Position = UDim2.new(1, -70, 0, 5)
+    CloseTab.BackgroundColor3 = Color3.fromRGB(100,30,30)
+    CloseTab.TextColor3 = Color3.fromRGB(255,255,255)
+    CloseTab.Text = "X"
+    CloseTab.Font = Enum.Font.GothamBold
+    CloseTab.TextSize = 16
+    CloseTab.Parent = TabContent
+
+    CloseTab.MouseButton1Click:Connect(function()
+        TabContent.Visible = false
     end)
-    TabButton.MouseLeave:Connect(function()
-        TweenService:Create(TabButton, TweenInfo.new(0.2), {BackgroundColor3 = (CurrentTab == TabContent and Color3.fromRGB(100,100,100) or Color3.fromRGB(60,60,60))}):Play()
+
+    -- Minimize/Maximize Button
+    local MiniBtn = Instance.new("TextButton")
+    MiniBtn.Size = UDim2.new(0, 25, 0, 25)
+    MiniBtn.Position = UDim2.new(1, -35, 0, 5)
+    MiniBtn.BackgroundColor3 = Color3.fromRGB(80,80,80)
+    MiniBtn.TextColor3 = Color3.fromRGB(255,255,255)
+    MiniBtn.Text = "-"
+    MiniBtn.Font = Enum.Font.GothamBold
+    MiniBtn.TextSize = 16
+    MiniBtn.Parent = TabContent
+
+    local Minimized = false
+    MiniBtn.MouseButton1Click:Connect(function()
+        Minimized = not Minimized
+        TabContent.Size = Minimized and UDim2.new(0, 480, 0, 50) or UDim2.new(0, 480, 0, 300)
     end)
 
     TabButton.MouseButton1Click:Connect(function()
         if CurrentTab then CurrentTab.Visible = false end
         TabContent.Visible = true
         CurrentTab = TabContent
-
-        -- highlight active tab
-        for _,btn in ipairs(Tabs) do
-            btn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-        end
-        TabButton.BackgroundColor3 = Color3.fromRGB(100,100,100)
     end)
 
     table.insert(Tabs, TabButton)
     return TabContent
 end
 
--- Example Tab: Auto Farm
+-- Example Tab
 local AutoTab = CreateTab("Auto Farm")
 
-local AutoToggle = Instance.new("TextButton")
-AutoToggle.Size = UDim2.new(0,150,0,30)
-AutoToggle.Position = UDim2.new(0,10,0,10)
-AutoToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
-AutoToggle.TextColor3 = Color3.fromRGB(255,255,255)
-AutoToggle.Text = "Auto Farm: OFF"
-AutoToggle.Font = Enum.Font.Gotham
-AutoToggle.TextSize = 16
-AutoToggle.Parent = AutoTab
+-- Close Script Button
+local CloseScriptBtn = Instance.new("TextButton")
+CloseScriptBtn.Size = UDim2.new(0, 160, 0, 35)
+CloseScriptBtn.Position = UDim2.new(0, 20, 0, 70)
+CloseScriptBtn.BackgroundColor3 = Color3.fromRGB(100,30,30)
+CloseScriptBtn.TextColor3 = Color3.fromRGB(255,255,255)
+CloseScriptBtn.Text = "Close Script"
+CloseScriptBtn.Font = Enum.Font.GothamBold
+CloseScriptBtn.TextSize = 18
+CloseScriptBtn.Parent = ScreenGui
 
-local ToggleCorner = Instance.new("UICorner")
-ToggleCorner.CornerRadius = UDim.new(0,6)
-ToggleCorner.Parent = AutoToggle
-
-local Enabled = false
-AutoToggle.MouseButton1Click:Connect(function()
-    Enabled = not Enabled
-    AutoToggle.Text = "Auto Farm: "..(Enabled and "ON" or "OFF")
+CloseScriptBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
 end)
 
-print("✅ Full Rayfield-style UI template loaded! Dragable, Tabs, Toggle, Open/Close Menu, Gradient+Shadow+Animation")
+print("✅ VinzHub-style UI template loaded! Show/Hide Menu, Minimize/Maximize Tabs, Close Tab, Close Script")
