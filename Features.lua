@@ -1,6 +1,6 @@
 --[[
 ========================================================
- RiooHub - Fish It (v1.4)
+ RiooHub - Fish It (v1.5)
  UI Custom mirip Rayfield, animasi halus + DRAG FIX ✅
 ========================================================
 ]]
@@ -10,10 +10,12 @@ local UserInputService = game:GetService("UserInputService")
 local player = game.Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
 
+-- Hapus UI lama
 if PlayerGui:FindFirstChild("RiooHubUI") then
 	PlayerGui.RiooHubUI:Destroy()
 end
 
+-- ScreenGui utama
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "RiooHubUI"
 ScreenGui.ResetOnSpawn = false
@@ -31,7 +33,6 @@ ShowButton.Font = Enum.Font.GothamBold
 ShowButton.TextSize = 16
 ShowButton.Text = "RiooHub - Fish It"
 ShowButton.BorderSizePixel = 0
-ShowButton.Active = true
 ShowButton.Parent = ScreenGui
 
 -- Frame utama
@@ -41,11 +42,8 @@ MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
 MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 MainFrame.Visible = false
-MainFrame.Active = true
-MainFrame.Selectable = true
-MainFrame.Draggable = false
-MainFrame.Parent = ScreenGui
 MainFrame.BorderSizePixel = 0
+MainFrame.Parent = ScreenGui
 Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
 
 -- Title bar (buat drag)
@@ -54,7 +52,6 @@ TitleBar.Size = UDim2.new(1, 0, 0, 35)
 TitleBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 TitleBar.BorderSizePixel = 0
 TitleBar.ZIndex = 10
-TitleBar.Active = true
 TitleBar.Parent = MainFrame
 
 local TitleText = Instance.new("TextLabel")
@@ -160,18 +157,19 @@ end)
 
 -- DRAG SYSTEM FIX ✅
 local dragging = false
-local dragInput, dragStart, startPos
+local dragStart, startPos
 
 TitleBar.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging = true
 		dragStart = input.Position
 		startPos = MainFrame.Position
-		input.Changed:Connect(function()
-			if input.UserInputState == Enum.UserInputState.End then
-				dragging = false
-			end
-		end)
+	end
+end)
+
+TitleBar.InputEnded:Connect(function(input)
+	if input.UserInputType == Enum.UserInputType.MouseButton1 then
+		dragging = false
 	end
 end)
 
