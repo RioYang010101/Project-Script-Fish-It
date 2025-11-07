@@ -1,8 +1,6 @@
--- Universal Script GUI Template version
--- Replace OrionLib with custom UI
-
+-- Universal Script GUI Template full version
+-- Place as LocalScript in StarterPlayerScripts
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
@@ -20,7 +18,6 @@ ScreenGui.Parent = PlayerGui
 -- Main frame
 local MAIN_WIDTH = 540
 local MAIN_HEIGHT = 360
-
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, MAIN_WIDTH, 0, MAIN_HEIGHT)
 MainFrame.Position = UDim2.new(0.5, -MAIN_WIDTH/2, 0.5, -MAIN_HEIGHT/2)
@@ -49,7 +46,7 @@ TitleLabel.TextSize = 20
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 TitleLabel.Parent = TitleBar
 
--- Buttons: Minimize / Close Script
+-- Title buttons
 local function makeTitleBtn(text, posX)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0,38,0,30)
@@ -75,8 +72,7 @@ TabBar.BackgroundColor3 = Color3.fromRGB(30,30,30)
 TabBar.Parent = MainFrame
 Instance.new("UICorner", TabBar).CornerRadius = UDim.new(0,8)
 
--- Example Tab
-local tabs = {}
+-- Tab content
 local TabContent = Instance.new("Frame")
 TabContent.Size = UDim2.new(1,-24,0,MAIN_HEIGHT-110)
 TabContent.Position = UDim2.new(0,12,0,94)
@@ -84,6 +80,8 @@ TabContent.BackgroundColor3 = Color3.fromRGB(48,48,48)
 TabContent.Parent = MainFrame
 Instance.new("UICorner", TabContent).CornerRadius = UDim.new(0,6)
 
+-- Tabs
+local tabs = {}
 local function addTab(name, onActivate)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0,110,0,32)
@@ -98,23 +96,20 @@ local function addTab(name, onActivate)
 
     table.insert(tabs, btn)
     btn.MouseButton1Click:Connect(function()
-        -- highlight active tab
         for _,b in ipairs(tabs) do b.BackgroundColor3 = Color3.fromRGB(60,60,60) end
         btn.BackgroundColor3 = Color3.fromRGB(90,90,90)
         if onActivate then pcall(onActivate) end
     end)
-
     return btn
 end
 
--- Add one tab as example
+-- Add example tab
 local mainTab = addTab("LocalPlayer", function()
     TabContent.Visible = true
 end)
 mainTab.BackgroundColor3 = Color3.fromRGB(90,90,90)
 
--- Section content
--- Button example: WalkSpeed
+-- Example button: WalkSpeed
 local WalkSpeedBtn = Instance.new("TextButton")
 WalkSpeedBtn.Size = UDim2.new(0,200,0,36)
 WalkSpeedBtn.Position = UDim2.new(0,12,0,12)
@@ -130,7 +125,7 @@ WalkSpeedBtn.MouseButton1Click:Connect(function()
     Player.Character.Humanoid.WalkSpeed = 300
 end)
 
--- Notification example
+-- Notification function
 local function ShowNotification(title, content, duration)
     local notif = Instance.new("Frame")
     notif.Size = UDim2.new(0,250,0,60)
@@ -150,29 +145,41 @@ local function ShowNotification(title, content, duration)
     label.TextWrapped = true
     label.Parent = notif
 
-    delay(duration or 5, function()
-        notif:Destroy()
-    end)
+    delay(duration or 5, function() notif:Destroy() end)
 end
 
--- show welcome notif
+-- Show welcome notification
 ShowNotification("WELCOME", "Notification content... what will it say??", 5)
 
--- Title bar buttons
-local minimized = false
+-- Show/Hide button (outside main frame)
+local ShowBtn = Instance.new("TextButton")
+ShowBtn.Size = UDim2.new(0,160,0,40)
+ShowBtn.Position = UDim2.new(0, 18, 0, 18)
+ShowBtn.AnchorPoint = Vector2.new(0,0)
+ShowBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
+ShowBtn.TextColor3 = Color3.fromRGB(240,240,240)
+ShowBtn.Font = Enum.Font.GothamBold
+ShowBtn.TextSize = 16
+ShowBtn.Text = "Show Menu"
+ShowBtn.Visible = false
+ShowBtn.Parent = ScreenGui
+Instance.new("UICorner", ShowBtn).CornerRadius = UDim.new(0,8)
+
+-- Minimize button hides main frame & shows ShowBtn
 MinimizeBtn.MouseButton1Click:Connect(function()
-    minimized = not minimized
-    if minimized then
-        MainFrame.Size = UDim2.new(0, MAIN_WIDTH, 0, 48)
-        TabContent.Visible = false
-    else
-        MainFrame.Size = UDim2.new(0, MAIN_WIDTH, 0, MAIN_HEIGHT)
-        TabContent.Visible = true
-    end
+    MainFrame.Visible = false
+    ShowBtn.Visible = true
 end)
 
+-- Show button restores main frame & hides ShowBtn
+ShowBtn.MouseButton1Click:Connect(function()
+    MainFrame.Visible = true
+    ShowBtn.Visible = false
+end)
+
+-- Close Script button
 CloseScriptBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
-print("✅ Universal Script GUI Template loaded with LocalPlayer tab and WalkSpeed button!")
+print("✅ RiooHub GUI loaded with Show/Hide button functionality!")
