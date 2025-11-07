@@ -12,22 +12,29 @@ if not success then
     return
 end
 
--- ====================
--- Custom Toggle Text for Rayfield UI
--- Mengubah teks "Show Rayfield" jadi "Show Menu ⚙️"
--- ====================
-
+-- ============================================================
+-- 🔧 FIX: Ganti teks "Show Rayfield" jadi "Show Menu ⚙️" (semua versi)
+-- ============================================================
 task.spawn(function()
-    -- tunggu sampai Rayfield UI sepenuhnya muncul
-    repeat task.wait() until Rayfield and Rayfield.UI
-
-    while task.wait(2) do
-        local ToggleBtn = Rayfield.UI:FindFirstChild("Toggle")
-        if ToggleBtn and ToggleBtn:FindFirstChild("TextLabel") then
-            local label = ToggleBtn.TextLabel
-            if label.Text ~= "Show Menu ⚙️" then
-                label.Text = "Show Menu ⚙️"
+    -- tunggu sampai Rayfield UI muncul
+    local ui = nil
+    repeat
+        for _, v in pairs(game:GetDescendants()) do
+            if v:IsA("TextButton") and v:FindFirstChild("TextLabel") and v.TextLabel.Text:match("Show Rayfield") then
+                ui = v
+                break
             end
+        end
+        task.wait(0.5)
+    until ui
+
+    -- ubah teks pertama kali
+    ui.TextLabel.Text = "Show Menu ⚙️"
+
+    -- loop buat jaga kalau teks berubah balik
+    while task.wait(2) do
+        if ui and ui:FindFirstChild("TextLabel") and ui.TextLabel.Text ~= "Show Menu ⚙️" then
+            ui.TextLabel.Text = "Show Menu ⚙️"
         end
     end
 end)
