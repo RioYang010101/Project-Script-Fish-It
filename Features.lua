@@ -1,3 +1,5 @@
+
+
 -- =================================================================================
 -- Rayfield UI Template for RiooHub - Fish It - Step 43: MANUAL KEY SYSTEM (FIXED + NEW METHOD INTEGRATED)
 -- Status: Memperbaiki struktur dan duplikasi kode di key system manual.
