@@ -1,4 +1,3 @@
--- Services
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
@@ -33,7 +32,7 @@ Title.TextSize = 20
 Title.Parent = MainFrame
 
 -- =======================
--- [Show/Hide Button Terpisah]
+-- [Show/Hide Button] - PASTI SELALU TERLIHAT
 -- =======================
 local ShowHideButton = Instance.new("TextButton")
 ShowHideButton.Size = UDim2.new(0, 80, 0, 30)
@@ -41,7 +40,7 @@ ShowHideButton.Position = UDim2.new(0, 10, 0, 10) -- di pojok kiri atas layar
 ShowHideButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 ShowHideButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ShowHideButton.Text = "Hide"
-ShowHideButton.Parent = ScreenGui
+ShowHideButton.Parent = ScreenGui -- PENTING: Parent di ScreenGui, bukan MainFrame
 
 local UIVisible = true
 ShowHideButton.MouseButton1Click:Connect(function()
@@ -67,4 +66,4 @@ AutoFarmToggle.MouseButton1Click:Connect(function()
     AutoFarmToggle.Text = "Auto Farm: " .. (AutoFarmEnabled and "ON" or "OFF")
 end)
 
-print("RiooHub Template with Show/Hide Button Loaded Successfully!")
+print("RiooHub Template with WORKING Show/Hide Loaded!")
