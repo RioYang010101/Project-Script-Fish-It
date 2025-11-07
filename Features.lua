@@ -1,18 +1,11 @@
--- RiooHub GUI simple (Minimize + Close Script)
+-- RiooHub Rayfield-style simple menu
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
 
--- Hapus semua instance lama di PlayerGui & CoreGui
+-- Bersihkan UI lama
 local PlayerGui = Player:WaitForChild("PlayerGui")
 for i,v in pairs(PlayerGui:GetChildren()) do
-    if v.Name == "RiooHubUI" then
-        v:Destroy()
-    end
-end
-for i,v in pairs(game:GetService("CoreGui"):GetChildren()) do
-    if v.Name == "RiooHubUI" then
-        v:Destroy()
-    end
+    if v.Name == "RiooHubUI" then v:Destroy() end
 end
 
 -- ScreenGui baru
@@ -21,7 +14,7 @@ ScreenGui.Name = "RiooHubUI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
 
-local MAIN_WIDTH, MAIN_HEIGHT = 540, 360
+local MAIN_WIDTH, MAIN_HEIGHT = 300, 400
 
 -- Main window
 local MainFrame = Instance.new("Frame")
@@ -49,7 +42,7 @@ TitleLabel.TextSize = 20
 TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
 TitleLabel.Parent = TitleBar
 
--- Buttons helper
+-- Buttons
 local function makeBtn(txt, posX)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.new(0,38,0,30)
@@ -65,15 +58,34 @@ local function makeBtn(txt, posX)
 end
 
 local MinimizeBtn = makeBtn("-", -80)
-local CloseScriptBtn = makeBtn("X", -38) -- Close Script pakai X
+local CloseScriptBtn = makeBtn("X", -38)
 
--- Tab content (simple)
-local TabContent = Instance.new("Frame")
-TabContent.Size = UDim2.new(1,-24,0,MAIN_HEIGHT-60)
-TabContent.Position = UDim2.new(0,12,0,60)
-TabContent.BackgroundColor3 = Color3.fromRGB(48,48,48)
-TabContent.Parent = MainFrame
-Instance.new("UICorner", TabContent).CornerRadius = UDim.new(0,6)
+-- Main content menu frame (bawah title bar)
+local MenuFrame = Instance.new("Frame")
+MenuFrame.Size = UDim2.new(1,-24,1,-48)
+MenuFrame.Position = UDim2.new(0,12,0,48)
+MenuFrame.BackgroundTransparency = 1
+MenuFrame.Parent = MainFrame
+
+-- Function untuk buat menu button
+local function addMenuButton(name, yPos, callback)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1,0,0,40)
+    btn.Position = UDim2.new(0,0,0,yPos)
+    btn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+    btn.TextColor3 = Color3.fromRGB(240,240,240)
+    btn.Text = name
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 16
+    btn.Parent = MenuFrame
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,6)
+    btn.MouseButton1Click:Connect(callback)
+end
+
+-- Tambahkan menu contoh
+addMenuButton("Auto Farm", 0, function() print("Auto Farm clicked") end)
+addMenuButton("Teleport", 50, function() print("Teleport clicked") end)
+addMenuButton("Shop", 100, function() print("Shop clicked") end)
 
 -- Show/Hide button saat minimized
 local ShowBtn = Instance.new("TextButton")
@@ -83,13 +95,13 @@ ShowBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
 ShowBtn.TextColor3 = Color3.fromRGB(240,240,240)
 ShowBtn.Font = Enum.Font.GothamBold
 ShowBtn.TextSize = 16
-ShowBtn.Text = "RiooHub - Fish It" -- tulisan Show menu diganti
+ShowBtn.Text = "RiooHub - Fish It"
 ShowBtn.Visible = false
 ShowBtn.ZIndex = 10
 ShowBtn.Parent = ScreenGui
 Instance.new("UICorner", ShowBtn).CornerRadius = UDim.new(0,8)
 
--- Button actions
+-- Tombol actions
 MinimizeBtn.MouseButton1Click:Connect(function()
     MainFrame.Visible = false
     ShowBtn.Visible = true
@@ -104,4 +116,4 @@ CloseScriptBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
-print("✅ RiooHub simple loaded (Minimize + Close Script, Delta-friendly)")
+print("✅ RiooHub Rayfield-style simple menu loaded")
