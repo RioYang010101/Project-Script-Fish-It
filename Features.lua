@@ -15,33 +15,6 @@ if not success then
     return
 end
 
--- ============================================================
--- 🔧 FIX: Ganti teks "Show Rayfield" jadi "Show Menu ⚙️"
--- ============================================================
-task.spawn(function()
-    local found = nil
-    repeat
-        for _, v in pairs(game:GetDescendants()) do
-            if v:IsA("TextButton") and v:FindFirstChildWhichIsA("TextLabel") then
-                local label = v:FindFirstChildWhichIsA("TextLabel")
-                if label.Text and string.find(label.Text, "Show Rayfield") then
-                    found = label
-                    label.Text = "Show Menu ⚙️"
-                    break
-                end
-            end
-        end
-        task.wait(0.5)
-    until found
-
-    -- loop jaga supaya kalau di-reset, tetap ganti lagi
-    while task.wait(2) do
-        if found and found.Text ~= "Show Menu ⚙️" then
-            found.Text = "Show Menu ⚙️"
-        end
-    end
-end)
-
 -- ====================
 -- GLOBAL VARIABLES & CFRAMES
 -- ====================
@@ -118,7 +91,7 @@ local function ToggleAutoTeleportEvent(s) autoTeleportEventActive=s; if s then l
 -- ====================
 local function CreateMainWindow()
     local Window = Rayfield:CreateWindow({
-        Name = "Fish It Hub - Step 43: Manual Key System", -- Ganti Nama
+        Name = "Rioo Hub - Project V1.0.0", -- Ganti Nama
         LoadingTitle = "Rioo Hub",
         LoadingSubtitle = "by Rioo - Loading...",
         Theme = "Default"
