@@ -22,31 +22,17 @@ local Window = Rayfield:CreateWindow({
 })
 
 -- =======================
--- Open/Close Menu Button (Manual)
+-- Ganti teks tombol Show/Hide default Rayfield
 -- =======================
-local CoreGui = game:GetService("CoreGui")
-local ToggleButton = Instance.new("TextButton")
-ToggleButton.Size = UDim2.new(0, 140, 0, 40)
-ToggleButton.Position = UDim2.new(0, 20, 0, 20)
-ToggleButton.BackgroundColor3 = Color3.fromRGB(70,70,70)
-ToggleButton.TextColor3 = Color3.fromRGB(255,255,255)
-ToggleButton.Text = "Close Menu"
-ToggleButton.Font = Enum.Font.SourceSansBold
-ToggleButton.TextSize = 18
-ToggleButton.Parent = CoreGui
-
-ToggleButton.MouseButton1Click:Connect(function()
-    local visible = Window.Visible
-    Window:SetVisible(not visible)
-    ToggleButton.Text = visible and "Open Menu" or "Close Menu"
-end)
+if Window.Toggle and Window.Toggle.TextButton then
+    Window.Toggle.TextButton.Text = "RiooHub - Fish It"
+end
 
 -- =======================
 -- Tab Example: Auto Farm
 -- =======================
 local AutoTab = Window:CreateTab("Auto Farm")
 
--- Toggle Example
 AutoTab:CreateToggle({
     Name = "Enable Auto Farm",
     CurrentValue = false,
@@ -54,12 +40,10 @@ AutoTab:CreateToggle({
     Callback = function(value)
         if value then
             print("Auto Farm Enabled")
-            -- tulis fungsi auto farm di sini
         else
             print("Auto Farm Disabled")
-            -- stop auto farm di sini
         end
     end
 })
 
-print("✅ Rayfield Template Loaded! Open/Close Menu + Auto Farm toggle siap pakai.")
+print("✅ Rayfield Template Loaded dengan tombol Show/Hide = RiooHub - Fish It")
