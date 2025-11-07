@@ -8,6 +8,14 @@
     ==========================================================================
 --]]
 
+
+-- [CLEANUP] Hapus semua UI sisa Rayfield jika ada
+for _, gui in pairs(game:GetService("CoreGui"):GetChildren()) do
+	if gui.Name:match("Rayfield") or gui.Name:match("RayField") then
+		gui:Destroy()
+	end
+end
+task.wait(0.5)
 -- [FIX 1] Dapatkan PlayerGui, ini cara yang benar untuk Studio
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
