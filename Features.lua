@@ -1,6 +1,6 @@
 --[[
 ==============================================================
- RiooHub - Fish It | Rayfield-Style Fade + Center Button
+ RiooHub - Fish It | Center Button + Rayfield Fade
  By Rio Yang
 ==============================================================
 --]]
@@ -141,13 +141,14 @@ for i, name in ipairs(Tabs) do
 end
 
 ----------------------------------------------------------------
--- LAUNCHER BUTTON (TOP CENTER)
+-- LAUNCHER BUTTON (CENTER TOP)
 ----------------------------------------------------------------
 local TweenService = game:GetService("TweenService")
 
 local ToggleBtn = Instance.new("TextButton", gui)
 ToggleBtn.Size = UDim2.new(0, 200, 0, 40)
-ToggleBtn.Position = UDim2.new(0.5, -100, 0.05, 0)
+ToggleBtn.AnchorPoint = Vector2.new(0.5, 0) -- 🔥 fix center
+ToggleBtn.Position = UDim2.new(0.5, 0, 0.03, 0)
 ToggleBtn.Text = "RiooHub - Fish It"
 ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(35, 55, 95)
@@ -161,10 +162,10 @@ ToggleCorner.CornerRadius = UDim.new(0, 10)
 makeDraggable(ToggleBtn)
 
 ----------------------------------------------------------------
--- SHOW / HIDE DENGAN RAYFIELD-STYLE FADE
+-- SHOW / HIDE FADE FIXED
 ----------------------------------------------------------------
 local visible = true
-local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+local tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
 ToggleBtn.MouseButton1Click:Connect(function()
 	visible = not visible
@@ -177,9 +178,9 @@ ToggleBtn.MouseButton1Click:Connect(function()
 	else
 		local fadeOut = TweenService:Create(Main, tweenInfo, {BackgroundTransparency = 1})
 		fadeOut:Play()
-		fadeOut.Completed:Wait()
+		task.wait(0.25)
 		Main.Visible = false
 	end
 end)
 
-print("✅ RiooHub - Fish It (Rayfield Fade + Center Button) Loaded!")
+print("✅ RiooHub - Fish It (Center Button + Fade Fixed) Loaded!")
