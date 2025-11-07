@@ -1,6 +1,6 @@
 --[[
 ==============================================================
- RiooHub - Fish It | Auto-Center + Slide Transition
+ RiooHub - Fish It | Auto-Center + Smooth Fade UI
  By Rio Yang
 ==============================================================
 --]]
@@ -10,11 +10,13 @@ local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 gui.Name = "RiooHubUI"
 gui.ResetOnSpawn = false
 
+local TweenService = game:GetService("TweenService")
+local UIS = game:GetService("UserInputService")
+
 ----------------------------------------------------------------
 -- DRAG FUNCTION
 ----------------------------------------------------------------
 local function makeDraggable(frame, dragArea)
-	local UIS = game:GetService("UserInputService")
 	local dragging, dragStart, startPos
 	dragArea = dragArea or frame
 
@@ -35,8 +37,7 @@ local function makeDraggable(frame, dragArea)
 	UIS.InputChanged:Connect(function(input)
 		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
 			local delta = input.Position - dragStart
-			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-									   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 		end
 	end)
 end
@@ -46,12 +47,14 @@ end
 ----------------------------------------------------------------
 local Main = Instance.new("Frame", gui)
 Main.Size = UDim2.new(0, 600, 0, 350)
-Main.Position = UDim2.new(0.5, -300, 1.2, -175) -- awal di bawah
 Main.AnchorPoint = Vector2.new(0.5, 0.5)
 Main.BackgroundColor3 = Color3.fromRGB(25, 35, 55)
 Main.BackgroundTransparency = 0.08
 Main.BorderSizePixel = 0
 Main.Visible = false
+Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+Main.BackgroundTransparency = 1
+Main.Size = UDim2.new(0, 550, 0, 320)
 
 local MainCorner = Instance.new("UICorner", Main)
 MainCorner.CornerRadius = UDim.new(0, 12)
@@ -142,10 +145,8 @@ for i, name in ipairs(Tabs) do
 end
 
 ----------------------------------------------------------------
--- LAUNCHER BUTTON (CENTER TOP)
+-- SHOW/HIDE BUTTON (TOP CENTER)
 ----------------------------------------------------------------
-local TweenService = game:GetService("TweenService")
-
 local ToggleBtn = Instance.new("TextButton", gui)
 ToggleBtn.Size = UDim2.new(0, 200, 0, 40)
 ToggleBtn.AnchorPoint = Vector2.new(0.5, 0)
@@ -163,23 +164,29 @@ ToggleCorner.CornerRadius = UDim.new(0, 10)
 makeDraggable(ToggleBtn)
 
 ----------------------------------------------------------------
--- SHOW / HIDE SLIDE ANIMATION + AUTO CENTER
+-- SMOOTH SHOW/HIDE FUNCTION (AUTO-CENTER)
 ----------------------------------------------------------------
 local visible = false
-local tweenInfo = TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
 local function showUI()
+	local vp = workspace.CurrentCamera.ViewportSize
+	Main.Position = UDim2.new(0, vp.X / 2, 0, vp.Y / 2)
 	Main.Visible = true
-	Main.Position = UDim2.new(0.5, -300, 1.2, -175) -- selalu start dari bawah
-	TweenService:Create(Main, tweenInfo, {Position = UDim2.new(0.5, -300, 0.5, -175)}):Play()
+	Main.BackgroundTransparency = 1
+	Main.Size = UDim2.new(0, 500, 0, 280)
+	TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		BackgroundTransparency = 0.08,
+		Size = UDim2.new(0, 600, 0, 350)
+	}):Play()
 end
 
 local function hideUI()
-	local tween = TweenService:Create(Main, tweenInfo, {Position = UDim2.new(0.5, -300, 1.2, -175)})
-	tween:Play()
-	tween.Completed:Connect(function()
-		Main.Visible = false
-	end)
+	TweenService:Create(Main, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+		BackgroundTransparency = 1,
+		Size = UDim2.new(0, 500, 0, 280)
+	}):Play()
+	task.wait(0.25)
+	Main.Visible = false
 end
 
 ToggleBtn.MouseButton1Click:Connect(function()
@@ -191,4 +198,4 @@ ToggleBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
-print("✅ RiooHub - Fish It (Auto-Center Slide Version) Loaded!")
+print("✅ RiooHub - Fish It (Centered Smooth UI) Loaded!")
