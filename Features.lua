@@ -1,5 +1,5 @@
 -- =================================================================================
--- Rayfield UI Template for Fish It Hub - Step 43: MANUAL KEY SYSTEM (FIXED + NEW METHOD INTEGRATED)
+-- Rayfield UI Template for RiooHub - Fish It - Step 43: MANUAL KEY SYSTEM (FIXED + NEW METHOD INTEGRATED)
 -- Status: Memperbaiki struktur dan duplikasi kode di key system manual.
 -- FIX TAMBAHAN: Integrasi metode baru untuk auto fishing tanpa mengubah yang lain.
 -- METODE BARU: Hook __namecall untuk memaksa Args[2] = 1 pada RF/RequestFishingMinigameStarted.
@@ -155,7 +155,7 @@ local validKeys = {"111"} -- Ganti dengan kunci valid Anda
 
 -- Buat Window untuk Key System
 local KeyWindow = Rayfield:CreateWindow({
-    Name = "Fish It Hub - Key System",
+    Name = "RiooHub - Fish It - Key System",
     LoadingTitle = "Rioo Hub",
     LoadingSubtitle = "by Rioo - Enter Key...",
     Theme = "Default"
