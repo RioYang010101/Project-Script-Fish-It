@@ -1,6 +1,6 @@
 --[[
 ========================================================
- RiooHub - Fish It (v1.1)
+ RiooHub - Fish It (v1.2)
  UI Custom mirip Rayfield, full tanpa library.
 ========================================================
 ]]
@@ -67,10 +67,29 @@ Shadow.Position = UDim2.new(0, -10, 0, -10)
 Shadow.ZIndex = 0
 Shadow.BackgroundTransparency = 1
 
+-- === TITLEBAR UNTUK DRAG ===
+local DragBar = Instance.new("Frame")
+DragBar.Name = "DragBar"
+DragBar.Size = UDim2.new(1, 0, 0, 35)
+DragBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+DragBar.BorderSizePixel = 0
+DragBar.Parent = MainFrame
+DragBar.ZIndex = 3
+
+local DragText = Instance.new("TextLabel")
+DragText.Size = UDim2.new(1, 0, 1, 0)
+DragText.BackgroundTransparency = 1
+DragText.Text = "RiooHub - Fish It"
+DragText.Font = Enum.Font.GothamBold
+DragText.TextSize = 16
+DragText.TextColor3 = Color3.fromRGB(255, 255, 255)
+DragText.Parent = DragBar
+
 -- Sidebar
 local Sidebar = Instance.new("Frame")
 Sidebar.Name = "Sidebar"
-Sidebar.Size = UDim2.new(0, 150, 1, 0)
+Sidebar.Size = UDim2.new(0, 150, 1, -35)
+Sidebar.Position = UDim2.new(0, 0, 0, 35)
 Sidebar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 Sidebar.BorderSizePixel = 0
 Sidebar.Parent = MainFrame
@@ -81,8 +100,8 @@ SidebarCorner.CornerRadius = UDim.new(0, 12)
 -- Container isi tab
 local ContentFrame = Instance.new("Frame")
 ContentFrame.Name = "ContentFrame"
-ContentFrame.Size = UDim2.new(1, -150, 1, 0)
-ContentFrame.Position = UDim2.new(0, 150, 0, 0)
+ContentFrame.Size = UDim2.new(1, -150, 1, -35)
+ContentFrame.Position = UDim2.new(0, 150, 0, 35)
 ContentFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
 ContentFrame.BorderSizePixel = 0
 ContentFrame.Parent = MainFrame
@@ -168,9 +187,8 @@ ShowButton.MouseButton1Click:Connect(function()
 	end
 end)
 
--- === DRAG SYSTEM ===
-local dragging = false
-local dragInput, dragStart, startPos
+-- === DRAG SYSTEM (FIXED TITLEBAR) ===
+local dragging, dragInput, dragStart, startPos
 
 local function update(input)
 	local delta = input.Position - dragStart
@@ -182,7 +200,7 @@ local function update(input)
 	)
 end
 
-MainFrame.InputBegan:Connect(function(input)
+DragBar.InputBegan:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseButton1 then
 		dragging = true
 		dragStart = input.Position
@@ -196,7 +214,7 @@ MainFrame.InputBegan:Connect(function(input)
 	end
 end)
 
-MainFrame.InputChanged:Connect(function(input)
+DragBar.InputChanged:Connect(function(input)
 	if input.UserInputType == Enum.UserInputType.MouseMovement then
 		dragInput = input
 	end
