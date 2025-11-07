@@ -17,7 +17,7 @@ ScreenGui.Parent = PlayerGui
 local MainFrame = Instance.new("Frame")
 MainFrame.Size = UDim2.new(0, 500, 0, 350)
 MainFrame.Position = UDim2.new(0.5, -250, 0.5, -175)
-MainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
+MainFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Draggable = true
@@ -32,6 +32,12 @@ Shadow.Color = Color3.fromRGB(0,0,0)
 Shadow.Thickness = 2
 Shadow.Transparency = 0.5
 Shadow.Parent = MainFrame
+
+-- Gradient
+local Gradient = Instance.new("UIGradient")
+Gradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(50,50,50)), ColorSequenceKeypoint.new(1, Color3.fromRGB(35,35,35))}
+Gradient.Rotation = 45
+Gradient.Parent = MainFrame
 
 -- =======================
 -- Title Bar
@@ -82,8 +88,8 @@ local Tabs = {}
 local CurrentTab = nil
 
 local TabBar = Instance.new("Frame")
-TabBar.Size = UDim2.new(0, 200, 0, 40)
-TabBar.Position = UDim2.new(0, 200, 0.5, -175)
+TabBar.Size = UDim2.new(0, 500, 0, 40)
+TabBar.Position = UDim2.new(0.5, -250, 0, 70)
 TabBar.BackgroundColor3 = Color3.fromRGB(30,30,30)
 TabBar.Parent = ScreenGui
 
@@ -93,8 +99,8 @@ TabBarCorner.Parent = TabBar
 
 local function CreateTab(name)
     local TabButton = Instance.new("TextButton")
-    TabButton.Size = UDim2.new(0, 180, 0, 35)
-    TabButton.Position = UDim2.new(0, 10 + #Tabs*190, 0, 2)
+    TabButton.Size = UDim2.new(0, 120, 0, 35)
+    TabButton.Position = UDim2.new(0, 10 + #Tabs*130, 0, 2)
     TabButton.BackgroundColor3 = Color3.fromRGB(60,60,60)
     TabButton.TextColor3 = Color3.fromRGB(255,255,255)
     TabButton.Text = name
@@ -155,10 +161,37 @@ local function CreateTab(name)
     return TabContent
 end
 
--- Example Tab
+-- =======================
+-- Example Tabs
+-- =======================
 local AutoTab = CreateTab("Auto Farm")
+local ShopTab = CreateTab("Shop")
+local SettingsTab = CreateTab("Settings")
 
+-- Example Toggle in Auto Tab
+local AutoToggle = Instance.new("TextButton")
+AutoToggle.Size = UDim2.new(0,150,0,30)
+AutoToggle.Position = UDim2.new(0,10,0,10)
+AutoToggle.BackgroundColor3 = Color3.fromRGB(70,70,70)
+AutoToggle.TextColor3 = Color3.fromRGB(255,255,255)
+AutoToggle.Text = "Auto Farm: OFF"
+AutoToggle.Font = Enum.Font.Gotham
+AutoToggle.TextSize = 16
+AutoToggle.Parent = AutoTab
+
+local ToggleCorner = Instance.new("UICorner")
+ToggleCorner.CornerRadius = UDim.new(0,6)
+ToggleCorner.Parent = AutoToggle
+
+local Enabled = false
+AutoToggle.MouseButton1Click:Connect(function()
+    Enabled = not Enabled
+    AutoToggle.Text = "Auto Farm: "..(Enabled and "ON" or "OFF")
+end)
+
+-- =======================
 -- Close Script Button
+-- =======================
 local CloseScriptBtn = Instance.new("TextButton")
 CloseScriptBtn.Size = UDim2.new(0, 160, 0, 35)
 CloseScriptBtn.Position = UDim2.new(0, 20, 0, 70)
@@ -173,4 +206,4 @@ CloseScriptBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
-print("✅ VinzHub-style UI template loaded! Show/Hide Menu, Minimize/Maximize Tabs, Close Tab, Close Script")
+print("✅ VinzHub-style full UI loaded! Show/Hide Menu, Minimize/Maximize Tabs, Close Tab, Close Script")
