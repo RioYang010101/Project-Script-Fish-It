@@ -1,8 +1,7 @@
 --[[
 ==============================================================
- RiooHub - Fish It | Sidebar + Fade + Drag
+ RiooHub - Fish It | Rayfield-Style Fade + Center Button
  By Rio Yang
- Style: Modern Rayfield Blue
 ==============================================================
 --]]
 
@@ -11,9 +10,9 @@ local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 gui.Name = "RiooHubUI"
 gui.ResetOnSpawn = false
 
---------------------------------------------------------------
--- 🔧 DRAG FUNCTION
---------------------------------------------------------------
+----------------------------------------------------------------
+-- DRAG FUNCTION
+----------------------------------------------------------------
 local function makeDraggable(frame, dragArea)
 	local UIS = game:GetService("UserInputService")
 	local dragging, dragStart, startPos
@@ -42,23 +41,23 @@ local function makeDraggable(frame, dragArea)
 	end)
 end
 
---------------------------------------------------------------
--- 🪟 MAIN UI
---------------------------------------------------------------
+----------------------------------------------------------------
+-- MAIN UI
+----------------------------------------------------------------
 local Main = Instance.new("Frame", gui)
 Main.Size = UDim2.new(0, 600, 0, 350)
-Main.Position = UDim2.new(0.35, 0, 0.3, 0)
+Main.Position = UDim2.new(0.5, -300, 0.5, -175)
 Main.BackgroundColor3 = Color3.fromRGB(25, 35, 55)
-Main.BackgroundTransparency = 0.1
+Main.BackgroundTransparency = 0.08
 Main.BorderSizePixel = 0
 Main.Visible = true
 
 local MainCorner = Instance.new("UICorner", Main)
 MainCorner.CornerRadius = UDim.new(0, 12)
 
---------------------------------------------------------------
--- 🔵 HEADER
---------------------------------------------------------------
+----------------------------------------------------------------
+-- HEADER
+----------------------------------------------------------------
 local Header = Instance.new("TextLabel", Main)
 Header.Size = UDim2.new(1, 0, 0, 40)
 Header.BackgroundColor3 = Color3.fromRGB(35, 50, 80)
@@ -74,9 +73,9 @@ HeaderCorner.CornerRadius = UDim.new(0, 12)
 
 makeDraggable(Main, Header)
 
---------------------------------------------------------------
--- 📜 SIDEBAR
---------------------------------------------------------------
+----------------------------------------------------------------
+-- SIDEBAR
+----------------------------------------------------------------
 local Sidebar = Instance.new("Frame", Main)
 Sidebar.Size = UDim2.new(0, 140, 1, -40)
 Sidebar.Position = UDim2.new(0, 0, 0, 40)
@@ -87,9 +86,9 @@ Sidebar.BorderSizePixel = 0
 local SidebarCorner = Instance.new("UICorner", Sidebar)
 SidebarCorner.CornerRadius = UDim.new(0, 12)
 
---------------------------------------------------------------
--- 🧩 CONTENT
---------------------------------------------------------------
+----------------------------------------------------------------
+-- CONTENT
+----------------------------------------------------------------
 local Content = Instance.new("Frame", Main)
 Content.Size = UDim2.new(1, -150, 1, -50)
 Content.Position = UDim2.new(0, 150, 0, 45)
@@ -100,9 +99,9 @@ Content.BorderSizePixel = 0
 local ContentCorner = Instance.new("UICorner", Content)
 ContentCorner.CornerRadius = UDim.new(0, 12)
 
---------------------------------------------------------------
--- 🏷️ TAB BUTTONS
---------------------------------------------------------------
+----------------------------------------------------------------
+-- TAB BUTTONS
+----------------------------------------------------------------
 local Tabs = {"Home", "Auto", "Shop", "Settings"}
 local Buttons = {}
 
@@ -141,14 +140,14 @@ for i, name in ipairs(Tabs) do
 	table.insert(Buttons, btn)
 end
 
---------------------------------------------------------------
--- 🎛️ LAUNCHER BUTTON (POJOK KIRI ATAS)
---------------------------------------------------------------
+----------------------------------------------------------------
+-- LAUNCHER BUTTON (TOP CENTER)
+----------------------------------------------------------------
 local TweenService = game:GetService("TweenService")
 
 local ToggleBtn = Instance.new("TextButton", gui)
 ToggleBtn.Size = UDim2.new(0, 200, 0, 40)
-ToggleBtn.Position = UDim2.new(0.02, 0, 0.05, 0)
+ToggleBtn.Position = UDim2.new(0.5, -100, 0.05, 0)
 ToggleBtn.Text = "RiooHub - Fish It"
 ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(35, 55, 95)
@@ -161,9 +160,9 @@ ToggleCorner.CornerRadius = UDim.new(0, 10)
 
 makeDraggable(ToggleBtn)
 
---------------------------------------------------------------
--- ✨ SHOW/HIDE DENGAN FADE
---------------------------------------------------------------
+----------------------------------------------------------------
+-- SHOW / HIDE DENGAN RAYFIELD-STYLE FADE
+----------------------------------------------------------------
 local visible = true
 local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
 
@@ -173,18 +172,8 @@ ToggleBtn.MouseButton1Click:Connect(function()
 	if visible then
 		Main.Visible = true
 		Main.BackgroundTransparency = 1
-		for _, obj in ipairs(Main:GetDescendants()) do
-			if obj:IsA("GuiObject") then
-				obj.BackgroundTransparency = 1
-				obj.TextTransparency = 1
-			end
-		end
-		TweenService:Create(Main, tweenInfo, {BackgroundTransparency = 0.1}):Play()
-		for _, obj in ipairs(Main:GetDescendants()) do
-			if obj:IsA("GuiObject") then
-				TweenService:Create(obj, tweenInfo, {BackgroundTransparency = obj.BackgroundTransparency - 0.1, TextTransparency = 0}):Play()
-			end
-		end
+		local fadeIn = TweenService:Create(Main, tweenInfo, {BackgroundTransparency = 0.08})
+		fadeIn:Play()
 	else
 		local fadeOut = TweenService:Create(Main, tweenInfo, {BackgroundTransparency = 1})
 		fadeOut:Play()
@@ -193,4 +182,4 @@ ToggleBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
-print("✅ RiooHub - Fish It (Fade + Drag) Loaded!")
+print("✅ RiooHub - Fish It (Rayfield Fade + Center Button) Loaded!")
