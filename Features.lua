@@ -1,6 +1,6 @@
 --[[
 ==============================================================
- RiooHub - Fish It | Auto-Center + Smooth Fade UI
+ RiooHub - Fish It v1.1 | Custom Modern UI (Rayfield-Style)
  By Rio Yang
 ==============================================================
 --]]
@@ -12,6 +12,17 @@ gui.ResetOnSpawn = false
 
 local TweenService = game:GetService("TweenService")
 local UIS = game:GetService("UserInputService")
+
+----------------------------------------------------------------
+-- EFFECT: BLUR BACKGROUND
+----------------------------------------------------------------
+local Blur = Instance.new("BlurEffect", game.Lighting)
+Blur.Size = 0
+Blur.Enabled = false
+
+local function tweenBlur(to)
+	TweenService:Create(Blur, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = to}):Play()
+end
 
 ----------------------------------------------------------------
 -- DRAG FUNCTION
@@ -37,24 +48,23 @@ local function makeDraggable(frame, dragArea)
 	UIS.InputChanged:Connect(function(input)
 		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
 			local delta = input.Position - dragStart
-			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+									   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
 		end
 	end)
 end
 
 ----------------------------------------------------------------
--- MAIN UI
+-- MAIN WINDOW
 ----------------------------------------------------------------
 local Main = Instance.new("Frame", gui)
 Main.Size = UDim2.new(0, 600, 0, 350)
 Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.Position = UDim2.new(0.5, 0, -0.3, 0) -- start di atas
 Main.BackgroundColor3 = Color3.fromRGB(25, 35, 55)
-Main.BackgroundTransparency = 0.08
+Main.BackgroundTransparency = 1
 Main.BorderSizePixel = 0
 Main.Visible = false
-Main.Position = UDim2.new(0.5, 0, 0.5, 0)
-Main.BackgroundTransparency = 1
-Main.Size = UDim2.new(0, 550, 0, 320)
 
 local MainCorner = Instance.new("UICorner", Main)
 MainCorner.CornerRadius = UDim.new(0, 12)
@@ -69,7 +79,6 @@ Header.Text = "RiooHub - Fish It"
 Header.TextColor3 = Color3.fromRGB(255, 255, 255)
 Header.TextSize = 20
 Header.Font = Enum.Font.GothamBold
-Header.BackgroundTransparency = 0.05
 Header.Active = true
 
 local HeaderCorner = Instance.new("UICorner", Header)
@@ -85,7 +94,6 @@ Sidebar.Size = UDim2.new(0, 140, 1, -40)
 Sidebar.Position = UDim2.new(0, 0, 0, 40)
 Sidebar.BackgroundColor3 = Color3.fromRGB(30, 45, 70)
 Sidebar.BackgroundTransparency = 0.05
-Sidebar.BorderSizePixel = 0
 
 local SidebarCorner = Instance.new("UICorner", Sidebar)
 SidebarCorner.CornerRadius = UDim.new(0, 12)
@@ -98,13 +106,12 @@ Content.Size = UDim2.new(1, -150, 1, -50)
 Content.Position = UDim2.new(0, 150, 0, 45)
 Content.BackgroundColor3 = Color3.fromRGB(20, 30, 50)
 Content.BackgroundTransparency = 0.15
-Content.BorderSizePixel = 0
 
 local ContentCorner = Instance.new("UICorner", Content)
 ContentCorner.CornerRadius = UDim.new(0, 12)
 
 ----------------------------------------------------------------
--- TAB BUTTONS
+-- TABS
 ----------------------------------------------------------------
 local Tabs = {"Home", "Auto", "Shop", "Settings"}
 local Buttons = {}
@@ -145,7 +152,7 @@ for i, name in ipairs(Tabs) do
 end
 
 ----------------------------------------------------------------
--- SHOW/HIDE BUTTON (TOP CENTER)
+-- SHOW / HIDE BUTTON (TOP CENTER)
 ----------------------------------------------------------------
 local ToggleBtn = Instance.new("TextButton", gui)
 ToggleBtn.Size = UDim2.new(0, 200, 0, 40)
@@ -164,29 +171,35 @@ ToggleCorner.CornerRadius = UDim.new(0, 10)
 makeDraggable(ToggleBtn)
 
 ----------------------------------------------------------------
--- SMOOTH SHOW/HIDE FUNCTION (AUTO-CENTER)
+-- SHOW / HIDE ANIMATION
 ----------------------------------------------------------------
 local visible = false
+local tweenInfo = TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
 local function showUI()
 	local vp = workspace.CurrentCamera.ViewportSize
-	Main.Position = UDim2.new(0, vp.X / 2, 0, vp.Y / 2)
+	Main.Position = UDim2.new(0.5, 0, -0.3, 0)
 	Main.Visible = true
-	Main.BackgroundTransparency = 1
-	Main.Size = UDim2.new(0, 500, 0, 280)
-	TweenService:Create(Main, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-		BackgroundTransparency = 0.08,
-		Size = UDim2.new(0, 600, 0, 350)
-	}):Play()
+	Blur.Enabled = true
+	tweenBlur(12)
+	local tween = TweenService:Create(Main, tweenInfo, {
+		Position = UDim2.new(0.5, 0, 0.5, 0),
+		BackgroundTransparency = 0.08
+	})
+	tween:Play()
 end
 
 local function hideUI()
-	TweenService:Create(Main, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
-		BackgroundTransparency = 1,
-		Size = UDim2.new(0, 500, 0, 280)
-	}):Play()
-	task.wait(0.25)
-	Main.Visible = false
+	local tween = TweenService:Create(Main, tweenInfo, {
+		Position = UDim2.new(0.5, 0, -0.3, 0),
+		BackgroundTransparency = 1
+	})
+	tween:Play()
+	tween.Completed:Connect(function()
+		Main.Visible = false
+		Blur.Enabled = false
+		tweenBlur(0)
+	end)
 end
 
 ToggleBtn.MouseButton1Click:Connect(function()
@@ -198,4 +211,4 @@ ToggleBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
-print("✅ RiooHub - Fish It (Centered Smooth UI) Loaded!")
+print("✅ RiooHub - Fish It v1.1 (Rayfield Style) Loaded!")
