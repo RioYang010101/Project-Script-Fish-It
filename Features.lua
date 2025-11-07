@@ -32,21 +32,21 @@ Title.TextSize = 20
 Title.Parent = MainFrame
 
 -- =======================
--- [Show/Hide Button] - PASTI SELALU TERLIHAT
+-- [Open/Close Menu Button]
 -- =======================
 local ShowHideButton = Instance.new("TextButton")
-ShowHideButton.Size = UDim2.new(0, 80, 0, 30)
-ShowHideButton.Position = UDim2.new(0, 10, 0, 10) -- di pojok kiri atas layar
+ShowHideButton.Size = UDim2.new(0, 100, 0, 30)
+ShowHideButton.Position = UDim2.new(0, 10, 0, 10) -- pojok kiri atas layar
 ShowHideButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
 ShowHideButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ShowHideButton.Text = "Hide"
-ShowHideButton.Parent = ScreenGui -- PENTING: Parent di ScreenGui, bukan MainFrame
+ShowHideButton.Text = "Close Menu" -- awalnya menu terbuka
+ShowHideButton.Parent = ScreenGui
 
 local UIVisible = true
 ShowHideButton.MouseButton1Click:Connect(function()
     UIVisible = not UIVisible
     MainFrame.Visible = UIVisible
-    ShowHideButton.Text = UIVisible and "Hide" or "Show"
+    ShowHideButton.Text = UIVisible and "Close Menu" or "Open Menu"
 end)
 
 -- =======================
@@ -66,4 +66,4 @@ AutoFarmToggle.MouseButton1Click:Connect(function()
     AutoFarmToggle.Text = "Auto Farm: " .. (AutoFarmEnabled and "ON" or "OFF")
 end)
 
-print("RiooHub Template with WORKING Show/Hide Loaded!")
+print("RiooHub Template with Open/Close Menu Loaded!")
