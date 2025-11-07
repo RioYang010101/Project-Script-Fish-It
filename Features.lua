@@ -1,7 +1,7 @@
 -- Load Rayfield
 local Rayfield = loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
 
--- Create Main Window
+-- Buat Window utama
 local Window = Rayfield:CreateWindow({
     Name = "RiooHub",
     LoadingTitle = "RiooHub Loading",
@@ -11,13 +11,30 @@ local Window = Rayfield:CreateWindow({
     KeySystem = false
 })
 
--- Wait until the Toggle button exists, then change the text
-spawn(function()
-    repeat wait() until Window.Toggle and Window.Toggle.TextButton
-    Window.Toggle.TextButton.Text = "RiooHub - Fish It"
+-- =======================
+-- Buat tombol Show/Hide sendiri
+-- =======================
+local CoreGui = game:GetService("CoreGui")
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(0, 160, 0, 40)
+ToggleButton.Position = UDim2.new(0, 20, 0, 20)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(70,70,70)
+ToggleButton.TextColor3 = Color3.fromRGB(255,255,255)
+ToggleButton.Text = "RiooHub - Fish It"
+ToggleButton.Font = Enum.Font.SourceSansBold
+ToggleButton.TextSize = 18
+ToggleButton.Parent = CoreGui -- selalu terlihat
+
+local UIVisible = true
+ToggleButton.MouseButton1Click:Connect(function()
+    UIVisible = not UIVisible
+    Window:SetVisible(UIVisible)
+    ToggleButton.Text = UIVisible and "RiooHub - Fish It" or "Open Menu"
 end)
 
--- Example Tab: Auto Farm
+-- =======================
+-- Tab contoh: Auto Farm
+-- =======================
 local AutoTab = Window:CreateTab("Auto Farm")
 
 AutoTab:CreateToggle({
@@ -33,4 +50,4 @@ AutoTab:CreateToggle({
     end
 })
 
-print("✅ Rayfield Template Loaded, Show/Hide button text should now be 'RiooHub - Fish It'")
+print("✅ Working: Tombol Show/Hide dibuat sendiri, teks: 'RiooHub - Fish It'")
