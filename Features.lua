@@ -1,63 +1,178 @@
-Local player = game.players.localplayer
+-- Universal Script GUI Template version
+-- Replace OrionLib with custom UI
 
-local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/jensonhirst/Orion/main/source')))()
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local Player = Players.LocalPlayer
+local PlayerGui = Player:WaitForChild("PlayerGui")
 
-local Window = OrionLib:MakeWindow({Name = "ZAMMSTR hub test", HidePremium = false, SaveConfig = true, ConfigFolder = "OrionTest"})
+-- Destroy existing UI
+if PlayerGui:FindFirstChild("RiooHubUI") then
+    PlayerGui.RiooHubUI:Destroy()
+end
 
---[[
-Name = <string> - The name of the UI.
-HidePremium = <bool> - Whether or not the user details shows Premium status or not.
-SaveConfig = <bool> - Toggles the config saving in the UI.
-ConfigFolder = <string> - The name of the folder where the configs are saved.
-IntroEnabled = <bool> - Whether or not to show the intro animation.
-IntroText = <string> - Text to show in the intro animation.
-IntroIcon = <string> - URL to the image you want to use in the intro animation.
-Icon = <string> - URL to the image you want displayed on the window.
-CloseCallback = <function> - Function to execute when the window is closed.
-]]
+-- ScreenGui
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "RiooHubUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = PlayerGui
 
-local Tab = Window:MakeTab({
-	Name = "Tab 1",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
+-- Main frame
+local MAIN_WIDTH = 540
+local MAIN_HEIGHT = 360
 
---[[
-Name = <string> - The name of the tab.
-Icon = <string> - The icon of the tab.
-PremiumOnly = <bool> - Makes the tab accessible to Sirus Premium users only.
-]]
+local MainFrame = Instance.new("Frame")
+MainFrame.Size = UDim2.new(0, MAIN_WIDTH, 0, MAIN_HEIGHT)
+MainFrame.Position = UDim2.new(0.5, -MAIN_WIDTH/2, 0.5, -MAIN_HEIGHT/2)
+MainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
+MainFrame.Active = true
+MainFrame.Draggable = true
+MainFrame.Parent = ScreenGui
+Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0,10)
+Instance.new("UIStroke", MainFrame).Thickness = 2
 
-local Section = Tab:AddSection({
-	Name = "LocalPlayer"
-})
+-- Title bar
+local TitleBar = Instance.new("Frame")
+TitleBar.Size = UDim2.new(1,0,0,48)
+TitleBar.BackgroundColor3 = Color3.fromRGB(28,28,28)
+TitleBar.Parent = MainFrame
+Instance.new("UICorner", TitleBar).CornerRadius = UDim.new(0,8)
 
---[[
-Name = <string> - The name of the section.
-]]
+local TitleLabel = Instance.new("TextLabel")
+TitleLabel.Size = UDim2.new(1,-120,1,0)
+TitleLabel.Position = UDim2.new(0,12,0,0)
+TitleLabel.BackgroundTransparency = 1
+TitleLabel.Text = "ZAMMSTR Hub Test"
+TitleLabel.TextColor3 = Color3.fromRGB(240,240,240)
+TitleLabel.Font = Enum.Font.GothamBold
+TitleLabel.TextSize = 20
+TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+TitleLabel.Parent = TitleBar
 
-OrionLib:MakeNotification({
-	Name = "WELCOME",
-	Content = "Notification content... what will it say??",
-	Image = "rbxassetid://4483345998",
-	Time = 5
-})
+-- Buttons: Minimize / Close Script
+local function makeTitleBtn(text, posX)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0,38,0,30)
+    btn.Position = UDim2.new(1,posX,0,9)
+    btn.BackgroundColor3 = Color3.fromRGB(65,65,65)
+    btn.TextColor3 = Color3.fromRGB(245,245,245)
+    btn.Text = text
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 18
+    btn.Parent = TitleBar
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,6)
+    return btn
+end
 
---[[
-Title = <string> - The title of the notification.
-Content = <string> - The content of the notification.
-Image = <string> - The icon of the notification.
-Time = <number> - The duration of the notfication.
-]]
+local MinimizeBtn = makeTitleBtn("-", -80)
+local CloseScriptBtn = makeTitleBtn("✕", -38)
 
-Tab:AddButton({
-	Name = "Button!",
-	Callback = function()
-      		Player.Character.Humanoid.WalkSpeed = 300
-  	end
-})
+-- Tab bar
+local TabBar = Instance.new("Frame")
+TabBar.Size = UDim2.new(1,0,0,44)
+TabBar.Position = UDim2.new(0,0,0,48)
+TabBar.BackgroundColor3 = Color3.fromRGB(30,30,30)
+TabBar.Parent = MainFrame
+Instance.new("UICorner", TabBar).CornerRadius = UDim.new(0,8)
 
---[[
-Name = <string> - The name of the button.
-Callback = <function> - The function of the button.
-]]
+-- Example Tab
+local tabs = {}
+local TabContent = Instance.new("Frame")
+TabContent.Size = UDim2.new(1,-24,0,MAIN_HEIGHT-110)
+TabContent.Position = UDim2.new(0,12,0,94)
+TabContent.BackgroundColor3 = Color3.fromRGB(48,48,48)
+TabContent.Parent = MainFrame
+Instance.new("UICorner", TabContent).CornerRadius = UDim.new(0,6)
+
+local function addTab(name, onActivate)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0,110,0,32)
+    btn.Position = UDim2.new(0, 8 + (#tabs*118), 0, 6)
+    btn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+    btn.TextColor3 = Color3.fromRGB(240,240,240)
+    btn.Text = name
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 15
+    btn.Parent = TabBar
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0,6)
+
+    table.insert(tabs, btn)
+    btn.MouseButton1Click:Connect(function()
+        -- highlight active tab
+        for _,b in ipairs(tabs) do b.BackgroundColor3 = Color3.fromRGB(60,60,60) end
+        btn.BackgroundColor3 = Color3.fromRGB(90,90,90)
+        if onActivate then pcall(onActivate) end
+    end)
+
+    return btn
+end
+
+-- Add one tab as example
+local mainTab = addTab("LocalPlayer", function()
+    TabContent.Visible = true
+end)
+mainTab.BackgroundColor3 = Color3.fromRGB(90,90,90)
+
+-- Section content
+-- Button example: WalkSpeed
+local WalkSpeedBtn = Instance.new("TextButton")
+WalkSpeedBtn.Size = UDim2.new(0,200,0,36)
+WalkSpeedBtn.Position = UDim2.new(0,12,0,12)
+WalkSpeedBtn.BackgroundColor3 = Color3.fromRGB(72,72,72)
+WalkSpeedBtn.TextColor3 = Color3.fromRGB(240,240,240)
+WalkSpeedBtn.Text = "Increase WalkSpeed"
+WalkSpeedBtn.Font = Enum.Font.Gotham
+WalkSpeedBtn.TextSize = 16
+WalkSpeedBtn.Parent = TabContent
+Instance.new("UICorner", WalkSpeedBtn).CornerRadius = UDim.new(0,6)
+
+WalkSpeedBtn.MouseButton1Click:Connect(function()
+    Player.Character.Humanoid.WalkSpeed = 300
+end)
+
+-- Notification example
+local function ShowNotification(title, content, duration)
+    local notif = Instance.new("Frame")
+    notif.Size = UDim2.new(0,250,0,60)
+    notif.Position = UDim2.new(0.5,-125,0,10)
+    notif.BackgroundColor3 = Color3.fromRGB(60,60,60)
+    notif.Parent = ScreenGui
+    Instance.new("UICorner", notif).CornerRadius = UDim.new(0,6)
+
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1,-12,1,-12)
+    label.Position = UDim2.new(0,6,0,6)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255,255,255)
+    label.Font = Enum.Font.Gotham
+    label.TextSize = 16
+    label.Text = title.."\n"..content
+    label.TextWrapped = true
+    label.Parent = notif
+
+    delay(duration or 5, function()
+        notif:Destroy()
+    end)
+end
+
+-- show welcome notif
+ShowNotification("WELCOME", "Notification content... what will it say??", 5)
+
+-- Title bar buttons
+local minimized = false
+MinimizeBtn.MouseButton1Click:Connect(function()
+    minimized = not minimized
+    if minimized then
+        MainFrame.Size = UDim2.new(0, MAIN_WIDTH, 0, 48)
+        TabContent.Visible = false
+    else
+        MainFrame.Size = UDim2.new(0, MAIN_WIDTH, 0, MAIN_HEIGHT)
+        TabContent.Visible = true
+    end
+end)
+
+CloseScriptBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
+
+print("✅ Universal Script GUI Template loaded with LocalPlayer tab and WalkSpeed button!")
