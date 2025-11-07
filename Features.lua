@@ -1,31 +1,64 @@
 --[[
 ==============================================================
- RiooHub - Fish It | Modern Sidebar UI (Dummy Version)
+ RiooHub - Fish It | Modern Sidebar UI (Drag Update)
  By Rio Yang
- Style: Rayfield Blue Theme, Sidebar Left, Animated Tabs
 ==============================================================
 --]]
 
--- GUI Setup
 local player = game.Players.LocalPlayer
 local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 gui.Name = "RiooHubUI"
 gui.ResetOnSpawn = false
 
--- Main Frame
+----------------------------------------------------------------
+--  DRAG FUNCTION
+----------------------------------------------------------------
+local function makeDraggable(frame, dragArea)
+    local UIS = game:GetService("UserInputService")
+    local dragging, dragStart, startPos
+
+    dragArea = dragArea or frame
+
+    dragArea.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = frame.Position
+        end
+    end)
+
+    dragArea.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    UIS.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+                                       startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end)
+end
+
+----------------------------------------------------------------
+--  UI MAIN
+----------------------------------------------------------------
 local Main = Instance.new("Frame", gui)
 Main.Size = UDim2.new(0, 600, 0, 350)
-Main.Position = UDim2.new(0.5, -300, 0.5, -175)
+Main.Position = UDim2.new(0.35, 0, 0.3, 0)
 Main.BackgroundColor3 = Color3.fromRGB(25, 35, 55)
 Main.BackgroundTransparency = 0.1
 Main.BorderSizePixel = 0
 Main.Visible = true
 
--- Corner
 local MainCorner = Instance.new("UICorner", Main)
 MainCorner.CornerRadius = UDim.new(0, 12)
 
--- Header
+----------------------------------------------------------------
+--  DRAGGABLE MAIN FRAME HEADER
+----------------------------------------------------------------
 local Header = Instance.new("TextLabel", Main)
 Header.Size = UDim2.new(1, 0, 0, 40)
 Header.BackgroundColor3 = Color3.fromRGB(35, 50, 80)
@@ -34,11 +67,16 @@ Header.TextColor3 = Color3.fromRGB(255, 255, 255)
 Header.TextSize = 20
 Header.Font = Enum.Font.GothamBold
 Header.BackgroundTransparency = 0.05
+Header.Active = true
 
 local HeaderCorner = Instance.new("UICorner", Header)
 HeaderCorner.CornerRadius = UDim.new(0, 12)
 
--- Sidebar
+makeDraggable(Main, Header)
+
+----------------------------------------------------------------
+--  SIDEBAR
+----------------------------------------------------------------
 local Sidebar = Instance.new("Frame", Main)
 Sidebar.Size = UDim2.new(0, 140, 1, -40)
 Sidebar.Position = UDim2.new(0, 0, 0, 40)
@@ -49,7 +87,9 @@ Sidebar.BorderSizePixel = 0
 local SidebarCorner = Instance.new("UICorner", Sidebar)
 SidebarCorner.CornerRadius = UDim.new(0, 12)
 
--- Content Frame
+----------------------------------------------------------------
+--  CONTENT
+----------------------------------------------------------------
 local Content = Instance.new("Frame", Main)
 Content.Size = UDim2.new(1, -150, 1, -50)
 Content.Position = UDim2.new(0, 150, 0, 45)
@@ -60,74 +100,69 @@ Content.BorderSizePixel = 0
 local ContentCorner = Instance.new("UICorner", Content)
 ContentCorner.CornerRadius = UDim.new(0, 12)
 
--- Tab Buttons
+----------------------------------------------------------------
+--  TAB BUTTONS
+----------------------------------------------------------------
 local Tabs = {"Home", "Auto", "Shop", "Settings"}
 local Buttons = {}
-local ActiveTab = nil
 
 for i, name in ipairs(Tabs) do
-	local btn = Instance.new("TextButton", Sidebar)
-	btn.Size = UDim2.new(1, -20, 0, 40)
-	btn.Position = UDim2.new(0, 10, 0, (i - 1) * 45 + 10)
-	btn.Text = name
-	btn.BackgroundColor3 = Color3.fromRGB(45, 65, 100)
-	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-	btn.TextSize = 16
-	btn.Font = Enum.Font.Gotham
-	btn.AutoButtonColor = true
-	btn.BackgroundTransparency = 0.15
+    local btn = Instance.new("TextButton", Sidebar)
+    btn.Size = UDim2.new(1, -20, 0, 40)
+    btn.Position = UDim2.new(0, 10, 0, (i - 1) * 45 + 10)
+    btn.Text = name
+    btn.BackgroundColor3 = Color3.fromRGB(45, 65, 100)
+    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    btn.TextSize = 16
+    btn.Font = Enum.Font.Gotham
 
-	local btnCorner = Instance.new("UICorner", btn)
-	btnCorner.CornerRadius = UDim.new(0, 8)
+    local btnCorner = Instance.new("UICorner", btn)
+    btnCorner.CornerRadius = UDim.new(0, 8)
 
-	btn.MouseButton1Click:Connect(function()
-		for _, other in ipairs(Buttons) do
-			other.BackgroundColor3 = Color3.fromRGB(45, 65, 100)
-		end
-		btn.BackgroundColor3 = Color3.fromRGB(65, 95, 145)
-		ActiveTab = name
+    btn.MouseButton1Click:Connect(function()
+        for _, b in ipairs(Buttons) do
+            b.BackgroundColor3 = Color3.fromRGB(45, 65, 100)
+        end
+        btn.BackgroundColor3 = Color3.fromRGB(65, 95, 145)
 
-		-- Ganti isi konten
-		for _, child in ipairs(Content:GetChildren()) do
-			child:Destroy()
-		end
+        for _, child in ipairs(Content:GetChildren()) do
+            child:Destroy()
+        end
 
-		local label = Instance.new("TextLabel", Content)
-		label.Size = UDim2.new(1, 0, 1, 0)
-		label.BackgroundTransparency = 1
-		label.Text = "Kamu membuka tab: " .. name
-		label.TextColor3 = Color3.fromRGB(255, 255, 255)
-		label.TextSize = 20
-		label.Font = Enum.Font.GothamSemibold
-		label.TextTransparency = 1
+        local label = Instance.new("TextLabel", Content)
+        label.BackgroundTransparency = 1
+        label.Size = UDim2.new(1, 0, 1, 0)
+        label.Font = Enum.Font.GothamSemibold
+        label.TextSize = 20
+        label.TextColor3 = Color3.fromRGB(255,255,255)
+        label.Text = "Kamu membuka tab: "..name
+    end)
 
-		-- Animasi masuk
-		label:TweenPosition(UDim2.new(0, 0, 0, 0), "Out", "Sine", 0.2, true)
-		game:GetService("TweenService"):Create(label, TweenInfo.new(0.4), {TextTransparency = 0}):Play()
-	end)
-
-	table.insert(Buttons, btn)
+    table.insert(Buttons, btn)
 end
 
--- Tombol untuk hide/show UI
+----------------------------------------------------------------
+--  DRAGGABLE MENU LAUNCH BUTTON (TOP)
+----------------------------------------------------------------
 local ToggleBtn = Instance.new("TextButton", gui)
 ToggleBtn.Size = UDim2.new(0, 200, 0, 40)
-ToggleBtn.Position = UDim2.new(0.5, -100, 1, -60)
+ToggleBtn.Position = UDim2.new(0.4, 0, 0.05, 0)
 ToggleBtn.Text = "RiooHub - Fish It"
 ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(35, 55, 95)
 ToggleBtn.Font = Enum.Font.GothamBold
-ToggleBtn.TextSize = 18
-ToggleBtn.AutoButtonColor = true
-ToggleBtn.BackgroundTransparency = 0.1
+ToggleBtn.TextSize = 17
+ToggleBtn.Active = true
 
 local ToggleCorner = Instance.new("UICorner", ToggleBtn)
 ToggleCorner.CornerRadius = UDim.new(0, 10)
 
-local visible = true
+makeDraggable(ToggleBtn)
+
+local menuVisible = true
 ToggleBtn.MouseButton1Click:Connect(function()
-	visible = not visible
-	Main.Visible = visible
+    menuVisible = not menuVisible
+    Main.Visible = menuVisible
 end)
 
-print("✅ RiooHub - Fish It UI berhasil dimuat!")
+print("✅ RiooHub - Fish It UI (Drag Edition) Loaded!")
