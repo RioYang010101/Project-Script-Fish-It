@@ -1,7 +1,8 @@
 --[[
 ==============================================================
- RiooHub - Fish It | Modern Sidebar UI (Drag Update)
+ RiooHub - Fish It | Sidebar + Fade + Drag
  By Rio Yang
+ Style: Modern Rayfield Blue
 ==============================================================
 --]]
 
@@ -10,41 +11,40 @@ local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 gui.Name = "RiooHubUI"
 gui.ResetOnSpawn = false
 
-----------------------------------------------------------------
---  DRAG FUNCTION
-----------------------------------------------------------------
+--------------------------------------------------------------
+-- 🔧 DRAG FUNCTION
+--------------------------------------------------------------
 local function makeDraggable(frame, dragArea)
-    local UIS = game:GetService("UserInputService")
-    local dragging, dragStart, startPos
+	local UIS = game:GetService("UserInputService")
+	local dragging, dragStart, startPos
+	dragArea = dragArea or frame
 
-    dragArea = dragArea or frame
+	dragArea.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = true
+			dragStart = input.Position
+			startPos = frame.Position
+		end
+	end)
 
-    dragArea.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = frame.Position
-        end
-    end)
+	dragArea.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			dragging = false
+		end
+	end)
 
-    dragArea.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-
-    UIS.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local delta = input.Position - dragStart
-            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
-                                       startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end)
+	UIS.InputChanged:Connect(function(input)
+		if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			local delta = input.Position - dragStart
+			frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+									   startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+		end
+	end)
 end
 
-----------------------------------------------------------------
---  UI MAIN
-----------------------------------------------------------------
+--------------------------------------------------------------
+-- 🪟 MAIN UI
+--------------------------------------------------------------
 local Main = Instance.new("Frame", gui)
 Main.Size = UDim2.new(0, 600, 0, 350)
 Main.Position = UDim2.new(0.35, 0, 0.3, 0)
@@ -56,9 +56,9 @@ Main.Visible = true
 local MainCorner = Instance.new("UICorner", Main)
 MainCorner.CornerRadius = UDim.new(0, 12)
 
-----------------------------------------------------------------
---  DRAGGABLE MAIN FRAME HEADER
-----------------------------------------------------------------
+--------------------------------------------------------------
+-- 🔵 HEADER
+--------------------------------------------------------------
 local Header = Instance.new("TextLabel", Main)
 Header.Size = UDim2.new(1, 0, 0, 40)
 Header.BackgroundColor3 = Color3.fromRGB(35, 50, 80)
@@ -74,9 +74,9 @@ HeaderCorner.CornerRadius = UDim.new(0, 12)
 
 makeDraggable(Main, Header)
 
-----------------------------------------------------------------
---  SIDEBAR
-----------------------------------------------------------------
+--------------------------------------------------------------
+-- 📜 SIDEBAR
+--------------------------------------------------------------
 local Sidebar = Instance.new("Frame", Main)
 Sidebar.Size = UDim2.new(0, 140, 1, -40)
 Sidebar.Position = UDim2.new(0, 0, 0, 40)
@@ -87,9 +87,9 @@ Sidebar.BorderSizePixel = 0
 local SidebarCorner = Instance.new("UICorner", Sidebar)
 SidebarCorner.CornerRadius = UDim.new(0, 12)
 
-----------------------------------------------------------------
---  CONTENT
-----------------------------------------------------------------
+--------------------------------------------------------------
+-- 🧩 CONTENT
+--------------------------------------------------------------
 local Content = Instance.new("Frame", Main)
 Content.Size = UDim2.new(1, -150, 1, -50)
 Content.Position = UDim2.new(0, 150, 0, 45)
@@ -100,53 +100,55 @@ Content.BorderSizePixel = 0
 local ContentCorner = Instance.new("UICorner", Content)
 ContentCorner.CornerRadius = UDim.new(0, 12)
 
-----------------------------------------------------------------
---  TAB BUTTONS
-----------------------------------------------------------------
+--------------------------------------------------------------
+-- 🏷️ TAB BUTTONS
+--------------------------------------------------------------
 local Tabs = {"Home", "Auto", "Shop", "Settings"}
 local Buttons = {}
 
 for i, name in ipairs(Tabs) do
-    local btn = Instance.new("TextButton", Sidebar)
-    btn.Size = UDim2.new(1, -20, 0, 40)
-    btn.Position = UDim2.new(0, 10, 0, (i - 1) * 45 + 10)
-    btn.Text = name
-    btn.BackgroundColor3 = Color3.fromRGB(45, 65, 100)
-    btn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    btn.TextSize = 16
-    btn.Font = Enum.Font.Gotham
+	local btn = Instance.new("TextButton", Sidebar)
+	btn.Size = UDim2.new(1, -20, 0, 40)
+	btn.Position = UDim2.new(0, 10, 0, (i - 1) * 45 + 10)
+	btn.Text = name
+	btn.BackgroundColor3 = Color3.fromRGB(45, 65, 100)
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.TextSize = 16
+	btn.Font = Enum.Font.Gotham
 
-    local btnCorner = Instance.new("UICorner", btn)
-    btnCorner.CornerRadius = UDim.new(0, 8)
+	local btnCorner = Instance.new("UICorner", btn)
+	btnCorner.CornerRadius = UDim.new(0, 8)
 
-    btn.MouseButton1Click:Connect(function()
-        for _, b in ipairs(Buttons) do
-            b.BackgroundColor3 = Color3.fromRGB(45, 65, 100)
-        end
-        btn.BackgroundColor3 = Color3.fromRGB(65, 95, 145)
+	btn.MouseButton1Click:Connect(function()
+		for _, b in ipairs(Buttons) do
+			b.BackgroundColor3 = Color3.fromRGB(45, 65, 100)
+		end
+		btn.BackgroundColor3 = Color3.fromRGB(65, 95, 145)
 
-        for _, child in ipairs(Content:GetChildren()) do
-            child:Destroy()
-        end
+		for _, child in ipairs(Content:GetChildren()) do
+			child:Destroy()
+		end
 
-        local label = Instance.new("TextLabel", Content)
-        label.BackgroundTransparency = 1
-        label.Size = UDim2.new(1, 0, 1, 0)
-        label.Font = Enum.Font.GothamSemibold
-        label.TextSize = 20
-        label.TextColor3 = Color3.fromRGB(255,255,255)
-        label.Text = "Kamu membuka tab: "..name
-    end)
+		local label = Instance.new("TextLabel", Content)
+		label.BackgroundTransparency = 1
+		label.Size = UDim2.new(1, 0, 1, 0)
+		label.Font = Enum.Font.GothamSemibold
+		label.TextSize = 20
+		label.TextColor3 = Color3.fromRGB(255, 255, 255)
+		label.Text = "Kamu membuka tab: " .. name
+	end)
 
-    table.insert(Buttons, btn)
+	table.insert(Buttons, btn)
 end
 
-----------------------------------------------------------------
---  DRAGGABLE MENU LAUNCH BUTTON (TOP)
-----------------------------------------------------------------
+--------------------------------------------------------------
+-- 🎛️ LAUNCHER BUTTON (POJOK KIRI ATAS)
+--------------------------------------------------------------
+local TweenService = game:GetService("TweenService")
+
 local ToggleBtn = Instance.new("TextButton", gui)
 ToggleBtn.Size = UDim2.new(0, 200, 0, 40)
-ToggleBtn.Position = UDim2.new(0.4, 0, 0.05, 0)
+ToggleBtn.Position = UDim2.new(0.02, 0, 0.05, 0)
 ToggleBtn.Text = "RiooHub - Fish It"
 ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleBtn.BackgroundColor3 = Color3.fromRGB(35, 55, 95)
@@ -159,10 +161,36 @@ ToggleCorner.CornerRadius = UDim.new(0, 10)
 
 makeDraggable(ToggleBtn)
 
-local menuVisible = true
+--------------------------------------------------------------
+-- ✨ SHOW/HIDE DENGAN FADE
+--------------------------------------------------------------
+local visible = true
+local tweenInfo = TweenInfo.new(0.3, Enum.EasingStyle.Sine, Enum.EasingDirection.Out)
+
 ToggleBtn.MouseButton1Click:Connect(function()
-    menuVisible = not menuVisible
-    Main.Visible = menuVisible
+	visible = not visible
+
+	if visible then
+		Main.Visible = true
+		Main.BackgroundTransparency = 1
+		for _, obj in ipairs(Main:GetDescendants()) do
+			if obj:IsA("GuiObject") then
+				obj.BackgroundTransparency = 1
+				obj.TextTransparency = 1
+			end
+		end
+		TweenService:Create(Main, tweenInfo, {BackgroundTransparency = 0.1}):Play()
+		for _, obj in ipairs(Main:GetDescendants()) do
+			if obj:IsA("GuiObject") then
+				TweenService:Create(obj, tweenInfo, {BackgroundTransparency = obj.BackgroundTransparency - 0.1, TextTransparency = 0}):Play()
+			end
+		end
+	else
+		local fadeOut = TweenService:Create(Main, tweenInfo, {BackgroundTransparency = 1})
+		fadeOut:Play()
+		fadeOut.Completed:Wait()
+		Main.Visible = false
+	end
 end)
 
-print("✅ RiooHub - Fish It UI (Drag Edition) Loaded!")
+print("✅ RiooHub - Fish It (Fade + Drag) Loaded!")
