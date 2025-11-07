@@ -1,68 +1,53 @@
 --[[
 ==================================================================================
- RiooHub - Fish It (Custom UI v1.0.0)
- Gaya: Modern (Mirip Rayfield, tapi 100% manual)
+ RiooHub - Fish It
+ Versi: 1.0.0
+ Gaya: Modern Sidebar (Mirip Rayfield)
  Dibuat oleh Rio Yang
 ==================================================================================
 --]]
 
--- Pastikan GUI lama dihapus dulu
 if game.CoreGui:FindFirstChild("RiooHubUI") then
 	game.CoreGui.RiooHubUI:Destroy()
 end
 
--- Buat ScreenGui utama
+local TweenService = game:GetService("TweenService")
+
 local gui = Instance.new("ScreenGui")
 gui.Name = "RiooHubUI"
 gui.ResetOnSpawn = false
 gui.Parent = game.CoreGui
 
--- Variabel untuk show/hide
 local minimized = false
 
 -- Frame utama
 local main = Instance.new("Frame")
-main.Name = "MainFrame"
-main.Size = UDim2.new(0, 450, 0, 320)
-main.Position = UDim2.new(0.5, -225, 0.5, -160)
-main.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+main.Size = UDim2.new(0, 550, 0, 340)
+main.Position = UDim2.new(0.5, -275, 0.5, -170)
+main.BackgroundColor3 = Color3.fromRGB(22, 25, 35)
 main.BorderSizePixel = 0
-main.BackgroundTransparency = 0.05
 main.Active = true
 main.Draggable = true
 main.Parent = gui
 
--- Shadow
-local shadow = Instance.new("ImageLabel")
-shadow.Name = "Shadow"
-shadow.Image = "rbxassetid://1316045217"
-shadow.ImageColor3 = Color3.fromRGB(0, 0, 0)
-shadow.ImageTransparency = 0.5
-shadow.Size = UDim2.new(1, 20, 1, 20)
-shadow.Position = UDim2.new(0, -10, 0, -10)
-shadow.BackgroundTransparency = 1
-shadow.Parent = main
-
--- Title bar
+-- Header
 local topbar = Instance.new("Frame")
 topbar.Size = UDim2.new(1, 0, 0, 36)
-topbar.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
+topbar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
 topbar.BorderSizePixel = 0
 topbar.Parent = main
 
--- Title text
 local title = Instance.new("TextLabel")
 title.Text = "RiooHub - Fish It"
 title.Font = Enum.Font.GothamBold
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextSize = 18
 title.BackgroundTransparency = 1
-title.Size = UDim2.new(1, -80, 1, 0)
-title.Position = UDim2.new(0, 10, 0, 0)
+title.Size = UDim2.new(1, -60, 1, 0)
+title.Position = UDim2.new(0, 15, 0, 0)
 title.TextXAlignment = Enum.TextXAlignment.Left
 title.Parent = topbar
 
--- Tombol minimize
 local minimize = Instance.new("TextButton")
 minimize.Text = "-"
 minimize.Font = Enum.Font.GothamBold
@@ -70,51 +55,134 @@ minimize.TextSize = 22
 minimize.TextColor3 = Color3.fromRGB(255, 255, 255)
 minimize.Size = UDim2.new(0, 40, 1, 0)
 minimize.Position = UDim2.new(1, -40, 0, 0)
-minimize.BackgroundColor3 = Color3.fromRGB(50, 50, 70)
+minimize.BackgroundColor3 = Color3.fromRGB(40, 45, 60)
 minimize.Parent = topbar
 
--- Tab container
-local tabFrame = Instance.new("Frame")
-tabFrame.Size = UDim2.new(1, -20, 0, 30)
-tabFrame.Position = UDim2.new(0, 10, 0, 46)
-tabFrame.BackgroundTransparency = 1
-tabFrame.Parent = main
+-- Sidebar kiri
+local sidebar = Instance.new("Frame")
+sidebar.Size = UDim2.new(0, 140, 1, -36)
+sidebar.Position = UDim2.new(0, 0, 0, 36)
+sidebar.BackgroundColor3 = Color3.fromRGB(30, 35, 50)
+sidebar.BorderSizePixel = 0
+sidebar.Parent = main
 
--- Contoh tombol tab
-local tabs = {"Home", "Auto", "Shop", "Settings"}
-for i, name in ipairs(tabs) do
-	local tab = Instance.new("TextButton")
-	tab.Text = name
-	tab.Font = Enum.Font.GothamSemibold
-	tab.TextSize = 14
-	tab.TextColor3 = Color3.fromRGB(255, 255, 255)
-	tab.Size = UDim2.new(0, 90, 1, 0)
-	tab.Position = UDim2.new(0, (i - 1) * 95, 0, 0)
-	tab.BackgroundColor3 = Color3.fromRGB(45, 45, 65)
-	tab.Parent = tabFrame
+-- Container isi tab (kanan)
+local content = Instance.new("Frame")
+content.Size = UDim2.new(1, -140, 1, -36)
+content.Position = UDim2.new(0, 140, 0, 36)
+content.BackgroundColor3 = Color3.fromRGB(25, 28, 40)
+content.BorderSizePixel = 0
+content.ClipsDescendants = true
+content.Parent = main
+
+-- Tombol reopen
+local reopen = Instance.new("TextButton")
+reopen.Text = "RiooHub - Fish It"
+reopen.Font = Enum.Font.GothamBold
+reopen.TextSize = 14
+reopen.TextColor3 = Color3.fromRGB(255, 255, 255)
+reopen.Size = UDim2.new(0, 180, 0, 40)
+reopen.Position = UDim2.new(0, 20, 1, -60)
+reopen.BackgroundColor3 = Color3.fromRGB(35, 40, 60)
+reopen.Visible = false
+reopen.Parent = gui
+
+-- Fungsi untuk buat konten tab
+local function createTabContent(name, text)
+	local frame = Instance.new("Frame")
+	frame.Name = name
+	frame.Size = UDim2.new(1, 0, 1, 0)
+	frame.BackgroundTransparency = 1
+	frame.Visible = false
+	frame.Parent = content
+
+	local label = Instance.new("TextLabel")
+	label.Text = text
+	label.Font = Enum.Font.GothamSemibold
+	label.TextSize = 20
+	label.TextColor3 = Color3.fromRGB(255, 255, 255)
+	label.BackgroundTransparency = 1
+	label.Position = UDim2.new(0, 20, 0, 20)
+	label.Size = UDim2.new(1, -40, 0, 30)
+	label.Parent = frame
+
+	return frame
 end
 
--- Tombol untuk membuka lagi saat minimize
-local reopenBtn = Instance.new("TextButton")
-reopenBtn.Text = "RiooHub - Fish It"
-reopenBtn.Font = Enum.Font.GothamBold
-reopenBtn.TextSize = 14
-reopenBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-reopenBtn.Size = UDim2.new(0, 150, 0, 36)
-reopenBtn.Position = UDim2.new(0, 20, 1, -60)
-reopenBtn.BackgroundColor3 = Color3.fromRGB(35, 35, 50)
-reopenBtn.Visible = false
-reopenBtn.Parent = gui
+-- Buat isi dummy per-tab
+local pages = {
+	Home = createTabContent("Home", "Selamat datang di RiooHub - Fish It!"),
+	Auto = createTabContent("Auto", "Fitur otomatisasi (contoh: Auto Fish)"),
+	Shop = createTabContent("Shop", "Menu belanja item (coming soon)"),
+	Settings = createTabContent("Settings", "Pengaturan UI dan preferensi")
+}
 
--- Fungsi minimize & reopen
+-- Fungsi buka tab dengan animasi
+local currentTab = nil
+local function openTab(name)
+	if currentTab == name then return end
+	for _, frame in pairs(pages) do
+		if frame.Visible then
+			TweenService:Create(frame, TweenInfo.new(0.25), {Position = UDim2.new(0.1, 0, 0, 0), BackgroundTransparency = 1}):Play()
+			wait(0.1)
+			frame.Visible = false
+		end
+	end
+
+	local newTab = pages[name]
+	if newTab then
+		newTab.Visible = true
+		newTab.BackgroundTransparency = 1
+		newTab.Position = UDim2.new(0.1, 0, 0, 0)
+		TweenService:Create(newTab, TweenInfo.new(0.3, Enum.EasingStyle.Quad), {
+			BackgroundTransparency = 0,
+			Position = UDim2.new(0, 0, 0, 0)
+		}):Play()
+		currentTab = name
+	end
+end
+
+-- Buat tombol sidebar
+local yPos = 10
+for _, name in ipairs({"Home", "Auto", "Shop", "Settings"}) do
+	local btn = Instance.new("TextButton")
+	btn.Text = name
+	btn.Font = Enum.Font.GothamSemibold
+	btn.TextSize = 15
+	btn.TextColor3 = Color3.fromRGB(255, 255, 255)
+	btn.Size = UDim2.new(1, -20, 0, 32)
+	btn.Position = UDim2.new(0, 10, 0, yPos)
+	btn.BackgroundColor3 = Color3.fromRGB(45, 50, 70)
+	btn.AutoButtonColor = false
+	btn.Parent = sidebar
+
+	btn.MouseEnter:Connect(function()
+		TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(55, 60, 85)}):Play()
+	end)
+
+	btn.MouseLeave:Connect(function()
+		TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(45, 50, 70)}):Play()
+	end)
+
+	btn.MouseButton1Click:Connect(function()
+		openTab(name)
+	end)
+
+	yPos = yPos + 38
+end
+
+-- Default tab
+openTab("Home")
+
+-- Minimize / Reopen logic
 minimize.MouseButton1Click:Connect(function()
 	minimized = not minimized
 	main.Visible = not minimized
-	reopenBtn.Visible = minimized
+	reopen.Visible = minimized
 end)
 
-reopenBtn.MouseButton1Click:Connect(function()
+reopen.MouseButton1Click:Connect(function()
 	minimized = false
 	main.Visible = true
-	reopenBtn.Visible = false
+	reopen.Visible = false
 end)
