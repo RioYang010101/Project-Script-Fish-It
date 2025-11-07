@@ -1,5 +1,11 @@
--- Delta Executor friendly UI
+-- Delta Executor friendly UI (tested)
 local CoreGui = game:GetService("CoreGui")
+
+-- ScreenGui wajib untuk Delta
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "RiooHubUI"
+ScreenGui.ResetOnSpawn = false
+ScreenGui.Parent = CoreGui
 
 -- =======================
 -- Main Frame
@@ -9,7 +15,7 @@ MainFrame.Size = UDim2.new(0, 400, 0, 300)
 MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
 MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 MainFrame.BorderSizePixel = 0
-MainFrame.Parent = CoreGui -- PENTING: pakai CoreGui untuk Delta Executor
+MainFrame.Parent = ScreenGui
 MainFrame.Active = true
 MainFrame.Draggable = true
 
@@ -25,7 +31,7 @@ Title.TextSize = 20
 Title.Parent = MainFrame
 
 -- =======================
--- Open/Close Button (Delta friendly)
+-- Open/Close Menu Button
 -- =======================
 local ToggleButton = Instance.new("TextButton")
 ToggleButton.Size = UDim2.new(0, 120, 0, 40)
@@ -35,7 +41,7 @@ ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ToggleButton.Text = "Close Menu"
 ToggleButton.Font = Enum.Font.SourceSansBold
 ToggleButton.TextSize = 18
-ToggleButton.Parent = CoreGui -- PENTING: parent CoreGui biar muncul di Delta Executor
+ToggleButton.Parent = ScreenGui -- penting: parent ScreenGui, bukan MainFrame
 
 local UIVisible = true
 ToggleButton.MouseButton1Click:Connect(function()
@@ -61,4 +67,4 @@ AutoFarmToggle.MouseButton1Click:Connect(function()
     AutoFarmToggle.Text = "Auto Farm: " .. (AutoFarmEnabled and "ON" or "OFF")
 end)
 
-print("✅ Delta Executor UI Loaded: Open/Close Menu Button pasti muncul!")
+print("✅ Delta Executor UI Loaded! MainFrame + Open/Close Menu Button harus muncul sekarang.")
