@@ -1,6 +1,6 @@
 --[[
 ==============================================================
- RiooHub - Fish It | Slide Transition + Center Button
+ RiooHub - Fish It | Auto-Center + Slide Transition
  By Rio Yang
 ==============================================================
 --]]
@@ -46,12 +46,12 @@ end
 ----------------------------------------------------------------
 local Main = Instance.new("Frame", gui)
 Main.Size = UDim2.new(0, 600, 0, 350)
-Main.Position = UDim2.new(0.5, -300, 1.2, -175) -- start off-screen (slide up)
+Main.Position = UDim2.new(0.5, -300, 1.2, -175) -- awal di bawah
 Main.AnchorPoint = Vector2.new(0.5, 0.5)
 Main.BackgroundColor3 = Color3.fromRGB(25, 35, 55)
 Main.BackgroundTransparency = 0.08
 Main.BorderSizePixel = 0
-Main.Visible = true
+Main.Visible = false
 
 local MainCorner = Instance.new("UICorner", Main)
 MainCorner.CornerRadius = UDim.new(0, 12)
@@ -163,13 +163,14 @@ ToggleCorner.CornerRadius = UDim.new(0, 10)
 makeDraggable(ToggleBtn)
 
 ----------------------------------------------------------------
--- SHOW / HIDE SLIDE ANIMATION
+-- SHOW / HIDE SLIDE ANIMATION + AUTO CENTER
 ----------------------------------------------------------------
 local visible = false
 local tweenInfo = TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
 
 local function showUI()
 	Main.Visible = true
+	Main.Position = UDim2.new(0.5, -300, 1.2, -175) -- selalu start dari bawah
 	TweenService:Create(Main, tweenInfo, {Position = UDim2.new(0.5, -300, 0.5, -175)}):Play()
 end
 
@@ -190,4 +191,4 @@ ToggleBtn.MouseButton1Click:Connect(function()
 	end
 end)
 
-print("✅ RiooHub - Fish It (Slide Transition Version) Loaded!")
+print("✅ RiooHub - Fish It (Auto-Center Slide Version) Loaded!")
