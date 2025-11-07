@@ -1,19 +1,29 @@
--- RiooHub GUI simple version (Delta-friendly)
+-- RiooHub GUI final clean version (Delta-friendly, 100% polos)
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
-local PlayerGui = Player:WaitForChild("PlayerGui")
 
--- Hapus UI lama
-if PlayerGui:FindFirstChild("RiooHubUI") then
-    PlayerGui.RiooHubUI:Destroy()
+-- Hapus semua instance lama di PlayerGui
+local PlayerGui = Player:WaitForChild("PlayerGui")
+for i,v in pairs(PlayerGui:GetChildren()) do
+    if v.Name == "RiooHubUI" then
+        v:Destroy()
+    end
 end
 
--- ScreenGui
+-- Hapus semua instance lama di CoreGui (beberapa executor render disini)
+for i,v in pairs(game:GetService("CoreGui"):GetChildren()) do
+    if v.Name == "RiooHubUI" then
+        v:Destroy()
+    end
+end
+
+-- ScreenGui baru
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "RiooHubUI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
 
+-- Constants
 local MAIN_WIDTH, MAIN_HEIGHT = 540, 360
 
 -- Main window
@@ -96,13 +106,14 @@ end)
 -- Show/Hide button
 local ShowBtn = Instance.new("TextButton")
 ShowBtn.Size = UDim2.new(0,160,0,40)
-ShowBtn.Position = UDim2.new(0, 18, 0, 18)
+ShowBtn.Position = UDim2.new(0,18,0,18)
 ShowBtn.BackgroundColor3 = Color3.fromRGB(70,70,70)
 ShowBtn.TextColor3 = Color3.fromRGB(240,240,240)
 ShowBtn.Font = Enum.Font.GothamBold
 ShowBtn.TextSize = 16
 ShowBtn.Text = "Show Menu"
 ShowBtn.Visible = false
+ShowBtn.ZIndex = 10
 ShowBtn.Parent = ScreenGui
 Instance.new("UICorner", ShowBtn).CornerRadius = UDim.new(0,8)
 
@@ -118,7 +129,9 @@ ShowBtn.MouseButton1Click:Connect(function()
     ShowBtn.Visible = false
 end)
 
--- Close button
+-- Close button destroys UI
 CloseBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
+
+print("✅ RiooHub GUI final clean loaded! 100% polos, Delta-friendly")
