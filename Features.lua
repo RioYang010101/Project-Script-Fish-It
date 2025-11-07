@@ -5,16 +5,6 @@ local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
 
 -- =======================
--- Clean existing Rayfield/Default UI (optional)
--- =======================
--- Uncomment if executor UI blocks
--- for _,gui in pairs(PlayerGui:GetChildren()) do
---     if gui:IsA("ScreenGui") and gui.Name:find("Rayfield") then
---         gui:Destroy()
---     end
--- end
-
--- =======================
 -- ScreenGui
 -- =======================
 local ScreenGui = Instance.new("ScreenGui")
@@ -77,7 +67,7 @@ TitleCorner.CornerRadius = UDim.new(0,10)
 TitleCorner.Parent = TitleBar
 
 -- =======================
--- Control Buttons (Minimize, Close Tab, Close Script)
+-- Control Buttons (Minimize/UpSize, Close Tab, Close Script)
 -- =======================
 local function createTitleButton(text, position)
     local btn = Instance.new("TextButton")
@@ -141,7 +131,7 @@ TabContent.Position = UDim2.new(0,10,0,90)
 TabContent.BackgroundColor3 = Color3.fromRGB(45,45,45)
 TabContent.Parent = MainFrame
 
--- Example toggle
+-- Example Toggle
 local AutoToggle = Instance.new("TextButton")
 AutoToggle.Size = UDim2.new(0,150,0,30)
 AutoToggle.Position = UDim2.new(0,10,0,10)
@@ -168,8 +158,13 @@ end)
 local Minimized = false
 MinimizeBtn.MouseButton1Click:Connect(function()
     Minimized = not Minimized
-    TabContent.Visible = not Minimized
-    MainFrame.Size = Minimized and UDim2.new(0,500,0,50) or UDim2.new(0,500,0,300)
+    if Minimized then
+        MainFrame.Size = UDim2.new(0, 500, 0, 70) -- kecilkan seluruh window, judul + tab bar tetap terlihat
+        TabContent.Visible = false
+    else
+        MainFrame.Size = UDim2.new(0, 500, 0, 300) -- kembalikan ukuran normal
+        TabContent.Visible = true
+    end
 end)
 
 CloseTabBtn.MouseButton1Click:Connect(function()
@@ -204,4 +199,4 @@ ShowMenuBtn.MouseButton1Click:Connect(function()
     ShowMenuBtn.Text = MenuVisible and "Hide Menu" or "Show Menu"
 end)
 
-print("✅ Final working VinzHub-style UI loaded! Show/Hide Menu, Tab bar, Minimize/UpSize/Close Tab, Close Script")
+print("✅ Final working VinzHub-style UI loaded! Show/Hide Menu, Minimize/UpSize main window, Close Tab, Close Script")
