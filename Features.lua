@@ -1,7 +1,18 @@
+-- Services
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local Player = Players.LocalPlayer
 local PlayerGui = Player:WaitForChild("PlayerGui")
+
+-- =======================
+-- Clean existing Rayfield/Default UI (optional)
+-- =======================
+-- Uncomment if executor UI blocks
+-- for _,gui in pairs(PlayerGui:GetChildren()) do
+--     if gui:IsA("ScreenGui") and gui.Name:find("Rayfield") then
+--         gui:Destroy()
+--     end
+-- end
 
 -- =======================
 -- ScreenGui
@@ -10,6 +21,7 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "RiooHubUI"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = PlayerGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
 -- =======================
 -- Main Window
@@ -34,7 +46,7 @@ Shadow.Thickness = 2
 Shadow.Transparency = 0.5
 Shadow.Parent = MainFrame
 
--- Gradient
+-- Gradient background
 local Gradient = Instance.new("UIGradient")
 Gradient.Color = ColorSequence.new{ColorSequenceKeypoint.new(0, Color3.fromRGB(50,50,50)), ColorSequenceKeypoint.new(1, Color3.fromRGB(35,35,35))}
 Gradient.Rotation = 45
@@ -60,7 +72,6 @@ TitleText.TextSize = 22
 TitleText.TextXAlignment = Enum.TextXAlignment.Left
 TitleText.Parent = TitleBar
 
--- Rounded corners for title
 local TitleCorner = Instance.new("UICorner")
 TitleCorner.CornerRadius = UDim.new(0,10)
 TitleCorner.Parent = TitleBar
@@ -97,16 +108,29 @@ TabBar.Position = UDim2.new(0,0,0,40)
 TabBar.BackgroundColor3 = Color3.fromRGB(30,30,30)
 TabBar.Parent = MainFrame
 
--- Example Tab Button
-local TabButton1 = Instance.new("TextButton")
-TabButton1.Size = UDim2.new(0, 100, 0, 30)
-TabButton1.Position = UDim2.new(0,10,0,5)
-TabButton1.BackgroundColor3 = Color3.fromRGB(60,60,60)
-TabButton1.TextColor3 = Color3.fromRGB(255,255,255)
-TabButton1.Text = "Auto Farm"
-TabButton1.Font = Enum.Font.GothamBold
-TabButton1.TextSize = 16
-TabButton1.Parent = TabBar
+local TabButtons = {}
+
+local function createTab(name)
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(0, 100, 0, 30)
+    btn.Position = UDim2.new(0, 10 + #TabButtons*110, 0, 5)
+    btn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+    btn.TextColor3 = Color3.fromRGB(255,255,255)
+    btn.Text = name
+    btn.Font = Enum.Font.GothamBold
+    btn.TextSize = 16
+    btn.Parent = TabBar
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0,6)
+    corner.Parent = btn
+
+    table.insert(TabButtons, btn)
+    return btn
+end
+
+-- Example Tab
+local AutoTabBtn = createTab("Auto Farm")
 
 -- =======================
 -- Tab Content
@@ -117,7 +141,7 @@ TabContent.Position = UDim2.new(0,10,0,90)
 TabContent.BackgroundColor3 = Color3.fromRGB(45,45,45)
 TabContent.Parent = MainFrame
 
--- Example Toggle
+-- Example toggle
 local AutoToggle = Instance.new("TextButton")
 AutoToggle.Size = UDim2.new(0,150,0,30)
 AutoToggle.Position = UDim2.new(0,10,0,10)
@@ -139,28 +163,25 @@ AutoToggle.MouseButton1Click:Connect(function()
 end)
 
 -- =======================
--- Button Functionalities
+-- Buttons Functionality
 -- =======================
--- Minimize/UpSize
 local Minimized = false
 MinimizeBtn.MouseButton1Click:Connect(function()
     Minimized = not Minimized
     TabContent.Visible = not Minimized
-    MainFrame.Size = Minimized and UDim2.new(0, 500, 0, 50) or UDim2.new(0, 500, 0, 300)
+    MainFrame.Size = Minimized and UDim2.new(0,500,0,50) or UDim2.new(0,500,0,300)
 end)
 
--- Close Tab (hide content, keep main frame)
 CloseTabBtn.MouseButton1Click:Connect(function()
     TabContent.Visible = false
 end)
 
--- Close Script
 CloseScriptBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
 end)
 
 -- =======================
--- Show/Hide Menu Outside Main Frame
+-- Show/Hide Menu Button
 -- =======================
 local ShowMenuBtn = Instance.new("TextButton")
 ShowMenuBtn.Size = UDim2.new(0,160,0,40)
@@ -183,4 +204,4 @@ ShowMenuBtn.MouseButton1Click:Connect(function()
     ShowMenuBtn.Text = MenuVisible and "Hide Menu" or "Show Menu"
 end)
 
-print("✅ VinzHub-style UI loaded! Show/Hide Menu, Minimize/UpSize/Close Tab, Close Script, Tab Bar")
+print("✅ Final working VinzHub-style UI loaded! Show/Hide Menu, Tab bar, Minimize/UpSize/Close Tab, Close Script")
