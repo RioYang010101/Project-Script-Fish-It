@@ -1,18 +1,11 @@
 --[[
 ============================================================
-RiooHub - Roblox Script Template (Full Project Base)
-Versi: 1.0
-Fitur:
-- Custom UI (draggable, tab, section)
-- Sistem Key/Authorization
-- Auto action hooks (placeholder)
-- Webhook integration (placeholder)
+RiooHub - Roblox Script Template with Show/Hide
 ============================================================
 --]]
 
 -- Services
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 
 local Player = Players.LocalPlayer
@@ -34,7 +27,7 @@ MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
 MainFrame.BorderSizePixel = 0
 MainFrame.Parent = ScreenGui
 MainFrame.Active = true
-MainFrame.Draggable = true -- dragable
+MainFrame.Draggable = true
 
 -- Title
 local Title = Instance.new("TextLabel")
@@ -46,6 +39,22 @@ Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.SourceSansBold
 Title.TextSize = 20
 Title.Parent = MainFrame
+
+-- Show/Hide Button
+local ShowHideButton = Instance.new("TextButton")
+ShowHideButton.Size = UDim2.new(0, 80, 0, 30)
+ShowHideButton.Position = UDim2.new(1, -90, 0, 5)
+ShowHideButton.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+ShowHideButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ShowHideButton.Text = "Hide"
+ShowHideButton.Parent = MainFrame
+
+local UIVisible = true
+ShowHideButton.MouseButton1Click:Connect(function()
+    UIVisible = not UIVisible
+    MainFrame.Visible = UIVisible
+    ShowHideButton.Text = UIVisible and "Hide" or "Show"
+end)
 
 -- Tabs container
 local TabsFrame = Instance.new("Frame")
@@ -91,14 +100,13 @@ end)
 -- =======================
 local WebhookURL = "PASTE_WEBHOOK_HERE"
 local function SendWebhook(msg)
-    -- placeholder function
     print("[Webhook] "..msg)
 end
 
 -- =======================
 -- [Key System Placeholder]
 -- =======================
-local Key = "RIOO123" -- contoh key
+local Key = "RIOO123"
 local function CheckKey(inputKey)
     return inputKey == Key
 end
@@ -108,9 +116,8 @@ end
 -- =======================
 RunService.RenderStepped:Connect(function()
     if AutoFarmEnabled then
-        -- contoh: print setiap frame, nanti diganti action game
         print("Auto action running...")
     end
 end)
 
-print("RiooHub Template Loaded Successfully!")
+print("RiooHub Show/Hide Template Loaded Successfully!")
