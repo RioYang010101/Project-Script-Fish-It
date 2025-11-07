@@ -6,35 +6,38 @@
 -- =================================================================================
 
 -- Load Rayfield UI Library (PAKAI LINK RESMI)
-local success, Rayfield = pcall(function() return loadstring(game:HttpGet('https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua'))() end)
+local success, Rayfield = pcall(function()
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/SiriusSoftwareLtd/Rayfield/main/source.lua"))()
+end)
+
 if not success then
-    warn("Gagal load Rayfield library! Error:", Rayfield)
+    warn("❌ Gagal load Rayfield:", Rayfield)
     return
 end
 
 -- ============================================================
--- 🔧 FIX: Ganti teks "Show Rayfield" jadi "Show Menu ⚙️" (semua versi)
+-- 🔧 FIX: Ganti teks "Show Rayfield" jadi "Show Menu ⚙️"
 -- ============================================================
 task.spawn(function()
-    -- tunggu sampai Rayfield UI muncul
-    local ui = nil
+    local found = nil
     repeat
         for _, v in pairs(game:GetDescendants()) do
-            if v:IsA("TextButton") and v:FindFirstChild("TextLabel") and v.TextLabel.Text:match("Show Rayfield") then
-                ui = v
-                break
+            if v:IsA("TextButton") and v:FindFirstChildWhichIsA("TextLabel") then
+                local label = v:FindFirstChildWhichIsA("TextLabel")
+                if label.Text and string.find(label.Text, "Show Rayfield") then
+                    found = label
+                    label.Text = "Show Menu ⚙️"
+                    break
+                end
             end
         end
         task.wait(0.5)
-    until ui
+    until found
 
-    -- ubah teks pertama kali
-    ui.TextLabel.Text = "Show Menu ⚙️"
-
-    -- loop buat jaga kalau teks berubah balik
+    -- loop jaga supaya kalau di-reset, tetap ganti lagi
     while task.wait(2) do
-        if ui and ui:FindFirstChild("TextLabel") and ui.TextLabel.Text ~= "Show Menu ⚙️" then
-            ui.TextLabel.Text = "Show Menu ⚙️"
+        if found and found.Text ~= "Show Menu ⚙️" then
+            found.Text = "Show Menu ⚙️"
         end
     end
 end)
