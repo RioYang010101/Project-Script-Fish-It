@@ -1,6 +1,6 @@
 --[[
 ==============================================================
- RiooHub - Fish It | Center Button + Rayfield Fade
+ RiooHub - Fish It | Slide Transition + Center Button
  By Rio Yang
 ==============================================================
 --]]
@@ -46,7 +46,8 @@ end
 ----------------------------------------------------------------
 local Main = Instance.new("Frame", gui)
 Main.Size = UDim2.new(0, 600, 0, 350)
-Main.Position = UDim2.new(0.5, -300, 0.5, -175)
+Main.Position = UDim2.new(0.5, -300, 1.2, -175) -- start off-screen (slide up)
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
 Main.BackgroundColor3 = Color3.fromRGB(25, 35, 55)
 Main.BackgroundTransparency = 0.08
 Main.BorderSizePixel = 0
@@ -147,7 +148,7 @@ local TweenService = game:GetService("TweenService")
 
 local ToggleBtn = Instance.new("TextButton", gui)
 ToggleBtn.Size = UDim2.new(0, 200, 0, 40)
-ToggleBtn.AnchorPoint = Vector2.new(0.5, 0) -- 🔥 fix center
+ToggleBtn.AnchorPoint = Vector2.new(0.5, 0)
 ToggleBtn.Position = UDim2.new(0.5, 0, 0.03, 0)
 ToggleBtn.Text = "RiooHub - Fish It"
 ToggleBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -162,25 +163,31 @@ ToggleCorner.CornerRadius = UDim.new(0, 10)
 makeDraggable(ToggleBtn)
 
 ----------------------------------------------------------------
--- SHOW / HIDE FADE FIXED
+-- SHOW / HIDE SLIDE ANIMATION
 ----------------------------------------------------------------
-local visible = true
-local tweenInfo = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+local visible = false
+local tweenInfo = TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+
+local function showUI()
+	Main.Visible = true
+	TweenService:Create(Main, tweenInfo, {Position = UDim2.new(0.5, -300, 0.5, -175)}):Play()
+end
+
+local function hideUI()
+	local tween = TweenService:Create(Main, tweenInfo, {Position = UDim2.new(0.5, -300, 1.2, -175)})
+	tween:Play()
+	tween.Completed:Connect(function()
+		Main.Visible = false
+	end)
+end
 
 ToggleBtn.MouseButton1Click:Connect(function()
 	visible = not visible
-
 	if visible then
-		Main.Visible = true
-		Main.BackgroundTransparency = 1
-		local fadeIn = TweenService:Create(Main, tweenInfo, {BackgroundTransparency = 0.08})
-		fadeIn:Play()
+		showUI()
 	else
-		local fadeOut = TweenService:Create(Main, tweenInfo, {BackgroundTransparency = 1})
-		fadeOut:Play()
-		task.wait(0.25)
-		Main.Visible = false
+		hideUI()
 	end
 end)
 
-print("✅ RiooHub - Fish It (Center Button + Fade Fixed) Loaded!")
+print("✅ RiooHub - Fish It (Slide Transition Version) Loaded!")
