@@ -1,16 +1,8 @@
---[[
-========================================================
- RiooHub - Fish It (v1.7)
- Simple UI, drag fix & tab proporsional ✅
-========================================================
-]]
-
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 local player = game.Players.LocalPlayer
 local PlayerGui = player:WaitForChild("PlayerGui")
 
--- Hapus UI lama
 if PlayerGui:FindFirstChild("RiooHubUI") then
 	PlayerGui.RiooHubUI:Destroy()
 end
@@ -19,34 +11,29 @@ end
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "RiooHubUI"
 ScreenGui.ResetOnSpawn = false
-ScreenGui.IgnoreGuiInset = true
 ScreenGui.Parent = PlayerGui
 
--- Tombol Show Menu
+-- Show Button
 local ShowButton = Instance.new("TextButton")
-ShowButton.Size = UDim2.new(0, 200, 0, 40)
-ShowButton.Position = UDim2.new(0.5, 0, 0, 10)
-ShowButton.AnchorPoint = Vector2.new(0.5, 0)
+ShowButton.Size = UDim2.new(0,200,0,40)
+ShowButton.Position = UDim2.new(0.5,0,0,10)
+ShowButton.AnchorPoint = Vector2.new(0.5,0)
+ShowButton.Text = "RiooHub - Fish It"
 ShowButton.BackgroundColor3 = Color3.fromRGB(30,30,30)
 ShowButton.TextColor3 = Color3.fromRGB(255,255,255)
-ShowButton.Font = Enum.Font.GothamBold
-ShowButton.TextSize = 16
-ShowButton.Text = "RiooHub - Fish It"
-ShowButton.BorderSizePixel = 0
 ShowButton.Parent = ScreenGui
 
 -- MainFrame
 local MainFrame = Instance.new("Frame")
-MainFrame.Size = UDim2.new(0, 500, 0, 350)
+MainFrame.Size = UDim2.new(0,500,0,350)
 MainFrame.Position = UDim2.new(0.5,0,0.5,0)
 MainFrame.AnchorPoint = Vector2.new(0.5,0.5)
 MainFrame.BackgroundColor3 = Color3.fromRGB(25,25,25)
 MainFrame.Visible = false
-MainFrame.BorderSizePixel = 0
 MainFrame.Parent = ScreenGui
-Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0,12)
+Instance.new("UICorner", MainFrame)
 
--- TitleBar (drag)
+-- TitleBar
 local TitleBar = Instance.new("Frame")
 TitleBar.Size = UDim2.new(1,0,0,35)
 TitleBar.BackgroundColor3 = Color3.fromRGB(35,35,35)
@@ -57,8 +44,6 @@ TitleText.Size = UDim2.new(1,0,1,0)
 TitleText.BackgroundTransparency = 1
 TitleText.Text = "RiooHub - Fish It"
 TitleText.TextColor3 = Color3.fromRGB(255,255,255)
-TitleText.Font = Enum.Font.GothamBold
-TitleText.TextSize = 16
 TitleText.Parent = TitleBar
 
 -- Sidebar
@@ -75,17 +60,15 @@ ContentFrame.Position = UDim2.new(0,130,0,35)
 ContentFrame.BackgroundColor3 = Color3.fromRGB(45,45,45)
 ContentFrame.Parent = MainFrame
 
--- Tab system
+-- Tab
 local Tabs = {}
 local function CreateTab(name)
 	local Button = Instance.new("TextButton")
 	Button.Size = UDim2.new(1,-10,0,35)
 	Button.Position = UDim2.new(0,5,0,(#Sidebar:GetChildren()-1)*40)
 	Button.BackgroundColor3 = Color3.fromRGB(50,50,50)
-	Button.TextColor3 = Color3.fromRGB(255,255,255)
-	Button.Font = Enum.Font.GothamBold
-	Button.TextSize = 14
 	Button.Text = name
+	Button.TextColor3 = Color3.fromRGB(255,255,255)
 	Button.Parent = Sidebar
 
 	local TabFrame = Instance.new("Frame")
@@ -105,50 +88,31 @@ end
 
 local AutoTab = CreateTab("Auto")
 local SettingsTab = CreateTab("Settings")
-
-local AutoLabel = Instance.new("TextLabel")
-AutoLabel.Size = UDim2.new(1,-20,0,30)
-AutoLabel.Position = UDim2.new(0,10,0,10)
-AutoLabel.BackgroundTransparency = 1
-AutoLabel.Text = "Auto Tab Content"
-AutoLabel.TextColor3 = Color3.fromRGB(255,255,255)
-AutoLabel.Font = Enum.Font.Gotham
-AutoLabel.TextSize = 14
-AutoLabel.Parent = AutoTab
-
 Tabs[1].Visible = true
 
 -- Show/hide
 local UIVisible = false
-local tweenInfo = TweenInfo.new(0.35,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
-local function ShowUI()
-	UIVisible = true
-	MainFrame.Visible = true
-	MainFrame.BackgroundTransparency = 1
-	MainFrame.Position = UDim2.new(0.5,0,0.45,0)
-	TweenService:Create(MainFrame,tweenInfo,{
-		Position = UDim2.new(0.5,0,0.5,0),
-		BackgroundTransparency = 0
-	}):Play()
-end
-local function HideUI()
-	UIVisible = false
-	local tween = TweenService:Create(MainFrame,tweenInfo,{
-		Position = UDim2.new(0.5,0,0.45,0),
-		BackgroundTransparency = 1
-	})
-	tween:Play()
-	tween.Completed:Wait()
-	MainFrame.Visible = false
-end
+local tweenInfo = TweenInfo.new(0.25,Enum.EasingStyle.Quad,Enum.EasingDirection.Out)
 ShowButton.MouseButton1Click:Connect(function()
-	if UIVisible then HideUI() else ShowUI() end
+	if UIVisible then
+		UIVisible=false
+		local tween=TweenService:Create(MainFrame,tweenInfo,{Position=UDim2.new(0.5,0,0.45,0),BackgroundTransparency=1})
+		tween:Play()
+		tween.Completed:Wait()
+		MainFrame.Visible=false
+	else
+		UIVisible=true
+		MainFrame.Visible=true
+		MainFrame.Position=UDim2.new(0.5,0,0.45,0)
+		MainFrame.BackgroundTransparency=1
+		TweenService:Create(MainFrame,tweenInfo,{Position=UDim2.new(0.5,0,0.5,0),BackgroundTransparency=0}):Play()
+	end
 end)
 
--- Drag fix (pasti jalan)
-local dragging = false
-local dragStart = Vector2.new()
-local frameStart = Vector2.new()
+-- DRAG (pasti jalan)
+local dragging=false
+local dragStart=Vector2.new()
+local frameStart=Vector2.new()
 TitleBar.InputBegan:Connect(function(input)
 	if input.UserInputType==Enum.UserInputType.MouseButton1 then
 		dragging=true
